@@ -10,3 +10,8 @@
 # version 
 - v0.0.3修复了启动文件错误导致的中断无法触发问题。
 - v0.0.3 fixes the issue that interrupts cannot be triggered due to boot file errors. 
+
+---
+
+- v0.0.4 修复了SPI向量表错误
+- v0.0.4 fixes the SPI vector table error
