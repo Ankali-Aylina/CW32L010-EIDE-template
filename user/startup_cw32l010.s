@@ -14,7 +14,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024-2028 Ankali-Aylina
+  * Copyright (c) 2025-2029 Ankali-Aylina
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -202,7 +202,7 @@ g_pfnVectors:
   .word BTIM3_IRQHandler          /* 22 Base Timer3 Interrupt Handler            */
   .word I2C1_IRQHandler           /* 23 I2C1 Interrupt Handler                   */
   .word 0                         /* 24 Reserved                                 */
-  .word SPI_IRQHandler            /* 25 SPI Interrupt Handler                    */
+  .word SPI1_IRQHandler           /* 25 SPI Interrupt Handler                    */
   .word 0                         /* 26 Reserved                                 */
   .word UART1_IRQHandler          /* 27 UART1 Interrupt Handler                  */
   .word UART2_IRQHandler          /* 28 UART2 Interrupt Handler                  */
@@ -217,6 +217,9 @@ g_pfnVectors:
 *这个定义。
 *
 *******************************************************************************/
+
+  .weak      Reset_Handler
+  .thumb_set Reset_Handler,Default_Handler
 
   .weak      NMI_Handler
   .thumb_set NMI_Handler,Default_Handler
@@ -284,8 +287,8 @@ g_pfnVectors:
   .weak      I2C1_IRQHandler
   .thumb_set I2C1_IRQHandler,Default_Handler
 
-  .weak      SPI_IRQHandler
-  .thumb_set SPI_IRQHandler,Default_Handler
+  .weak      SPI1_IRQHandler
+  .thumb_set SPI1_IRQHandler,Default_Handler
 
   .weak      UART1_IRQHandler
   .thumb_set UART1_IRQHandler,Default_Handler
