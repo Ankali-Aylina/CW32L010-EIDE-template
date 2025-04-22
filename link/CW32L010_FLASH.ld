@@ -26,7 +26,7 @@
 ENTRY(Reset_Handler)
 
 /*用户模式堆栈的最高地址*/
-_estack = ORIGIN(RAM) + LENGTH(RAM);
+_estack = ORIGIN(RAM) + LENGTH(RAM); /* 最大RAM地址 */
 /*如果堆栈和堆不适应RAM，则生成链接错误*/
 _Min_Heap_Size = 0x200;      /* 堆所需的最小大小 */
 _Min_Stack_Size = 0x400; /* 堆栈所需的最小大小 */
@@ -75,7 +75,7 @@ SECTIONS
     . = ALIGN(4);
   } >FLASH
 
-  /*确保异常表和异常索引表被正确地放置在 FLASH 内存区域中*/  
+  /*确保异常表和异常索引表被正确地放置在 FLASH 内存区域中*/
   .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
   .ARM : {
     __exidx_start = .;
@@ -107,7 +107,7 @@ SECTIONS
   /*由启动用来初始化数据*/
   _sidata = LOADADDR(.data);
 
-  /* 初始化的数据部分进入RAM，在代码后加载LMA副本 */ 
+  /* 初始化的数据部分进入RAM，在代码后加载LMA副本 */
   .data :
   {
     . = ALIGN(4);
@@ -155,5 +155,5 @@ SECTIONS
     libgcc.a ( * )
   }
 
-  .ARM.attributes 0 : { *(.ARM.attributes) }  
+  .ARM.attributes 0 : { *(.ARM.attributes) }
 }

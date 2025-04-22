@@ -21,16 +21,16 @@
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
-  * P.s: I hope this document can help you and make it easier for you to learn CW32L010. 
-  *      At the same time, when sharing this document, I hope you will not delete this paragraph. 
-  *      Only when everyone starts to maintain the open source environment can our open source spirit continue. 
+  * P.s: I hope this document can help you and make it easier for you to learn CW32L010.
+  *      At the same time, when sharing this document, I hope you will not delete this paragraph.
+  *      Only when everyone starts to maintain the open source environment can our open source spirit continue.
   *      Thank you for reading here!
   ******************************************************************************
   */
 
 .syntax unified
-.cpu cortex-m0plus
-.fpu softvfp
+.cpu cortex-m0plus /*芯片型号*/
+.fpu softvfp  /*浮点*/
 .thumb
 
 .global g_pfnVectors
@@ -38,10 +38,10 @@
 
 /* start address for the initialization values of the .data section.
 defined in linker script */
-/* .data部分初始化值的开始地址 */
+/* .data初始化值的起始地址 */
 .word _sidata
 /* start address for the .data section. defined in linker script */
-/* .data开始地址 */
+/* .data起始地址 */
 .word _sdata
 /* end address for the .data section. defined in linker script */
 /* .data结束地址 */
@@ -69,16 +69,13 @@ Reset_Handler:
   ldr   r0, =_estack
   mov   sp, r0          /* set stack pointer */
 
-/* Call the clock system initialization function.*/
-/*调用时钟系统初始化函数。*/
-  bl  SystemInit
-
 /* Copy the data segment initializers from flash to SRAM */
-/*将数据段初始化器从闪存复制到SRAM */
+/*将数据段初始化从闪存复制到SRAM */
+ApplicationStart:
   ldr r0, =_sdata
   ldr r1, =_edata
-  ldr r2, =_sidata
-  movs r3, #0
+  ldr r2, =_sidata //指向源地址
+  movs r3, #0 /*设置r3为0*/
   b LoopCopyDataInit
 
 CopyDataInit:
@@ -105,6 +102,10 @@ FillZerobss:
 LoopFillZerobss:
   cmp r2, r4
   bcc FillZerobss
+
+/* Call the clock system initialization function.*/
+/*调用时钟系统初始化函数。移动完数据再初始化系统！*/
+  bl  SystemInit
 
 /* Call static constructors */
 /*调用静态构造函数*/
@@ -215,12 +216,8 @@ g_pfnVectors:
 *为Default_Handler的每个异常处理程序提供弱别名。
 *由于它们是弱别名，任何同名的函数都将被覆盖
 *这个定义。
-*
+*不能weak Reset_Handler!!!
 *******************************************************************************/
-
-  .weak      Reset_Handler
-  .thumb_set Reset_Handler,Default_Handler
-
   .weak      NMI_Handler
   .thumb_set NMI_Handler,Default_Handler
 
