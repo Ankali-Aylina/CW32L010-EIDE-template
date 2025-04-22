@@ -7,11 +7,16 @@
 - PS.Since this is my first time writing an Arm GNU toolchain assembly file, unexpected errors may occur, so if you encounter problems and have a solution to them, you are welcome to submit! Thank you!
 - PS.由于这是我第一次编写Arm GNU工具链汇编文件，因此可能会出现意想不到的错误，所以如果您遇到问题并且有办法解决，欢迎提交！谢谢你！
 
-# version 
+# version
 - v0.0.3修复了启动文件错误导致的中断无法触发问题。
-- v0.0.3 fixes the issue that interrupts cannot be triggered due to boot file errors. 
+- v0.0.3 fixes the issue that interrupts cannot be triggered due to boot file errors.
 
 ---
 
 - v0.0.4 修复了SPI向量表错误
 - v0.0.4 fixes the SPI vector table error
+
+----
+
+- v0.0.5 修复了.s文件中的严重错误，请拉取全新库！
+- v0.0.5 fixes a serious error in the .s file, please pull the new library!
