@@ -28,29 +28,33 @@
   ******************************************************************************
   */
 
-.syntax unified
-.cpu cortex-m0plus /*芯片型号*/
-.fpu softvfp  /*浮点*/
-.thumb
+.syntax unified // 启用统一的ARM/Thumb汇编语法。
+.cpu cortex-m0plus // 使用Cortex-M0+处理器
+.fpu softvfp // 使用软件浮点运算，M0+无硬件FPU
+.thumb // 使用Thumb指令集
 
-.global g_pfnVectors
-.global Default_Handler
+.global g_pfnVectors // 声明全局变量g_pfnVectors
+.global Default_Handler // 声明全局函数Default_Handler
 
 /* start address for the initialization values of the .data section.
 defined in linker script */
-/* .data初始化值的起始地址 */
+/* .data data段 Flash中初始化数据的起始地址 */
 .word _sidata
+
 /* start address for the .data section. defined in linker script */
-/* .data起始地址 */
+/* .data data段 RAM中数据段的起始地址 */
 .word _sdata
+
 /* end address for the .data section. defined in linker script */
-/* .data结束地址 */
+/* .data data段 RAM中数据段的结束地址 */
 .word _edata
+
 /* start address for the .bss section. defined in linker script */
-/* .bss开始地址 */
+/* .bss BSS段（未初始化全局变量）的起始地址 */
 .word _sbss
+
 /* end address for the .bss section. defined in linker script */
-/* .bss的结束地址 */
+/* .bss BSS段（未初始化全局变量）的结束地址 */
 .word _ebss
 
 /**
@@ -62,54 +66,63 @@ defined in linker script */
  * @retval None
 */
 
+  /*定义一个名为 .text.Reset_Handler 的代码段（Section），专门存放 Reset_Handler 函数的代码 */
   .section .text.Reset_Handler
+
+  /*将 Reset_Handler 声明为 弱符号（Weak Symbol） */
   .weak Reset_Handler
+
+  /*将 Reset_Handler 声明为 函数类型（Function Type） */
+  /*%function：表示符号是函数类型 */
   .type Reset_Handler, %function
 Reset_Handler:
-  ldr   r0, =_estack
-  mov   sp, r0          /* set stack pointer */
+  ldr   r0, =_estack    /* 获取栈顶地址 */
+  mov   sp, r0          /* set stack pointer 设置栈指针 */
 
 /* Copy the data segment initializers from flash to SRAM */
 /*将数据段初始化从闪存复制到SRAM */
 ApplicationStart:
-  ldr r0, =_sdata
-  ldr r1, =_edata
-  ldr r2, =_sidata //指向源地址
-  movs r3, #0 /*设置r3为0*/
-  b LoopCopyDataInit
+  ldr r0, =_sdata       // 加载_sdata的地址到r0寄存器（data段起始地址）
+  ldr r1, =_edata       // 加载_edata的地址到r1寄存器（data段终止地址）
+  ldr r2, =_sidata      // 加载_sidata的地址到r2寄存器（Flash中的初始化数据）
+  movs r3, #0           // 将0移动到r3寄存器
+  b LoopCopyDataInit    // 跳转到LoopCopyDataInit标签
 
 CopyDataInit:
-  ldr r4, [r2, r3]
-  str r4, [r0, r3]
-  adds r3, r3, #4
+  ldr r4, [r2, r3]      // 从r2寄存器加上r3寄存器的值所指向的内存地址中，将数据加载到r4寄存器中（加载Flash中的初始化数据到r4）
+  str r4, [r0, r3]      // 将r4寄存器中的数据存储到r0寄存器加上r3寄存器的值所指向的内存地址中(将r4中的数据存储到RAM中)
+  adds r3, r3, #4       // 将r3寄存器的值加上4，并将结果存储到r3寄存器中(移动到下一个地址继续复制)
+
 
 LoopCopyDataInit:
-  adds r4, r0, r3
-  cmp r4, r1
-  bcc CopyDataInit
+  adds r4, r0, r3       // 将RAM数据段起始地址与r3寄存器的值相加，并将结果存储到r4寄存器中(将r4的数据替换为data段下一位地址)
+  cmp r4, r1            // 对比r4寄存器与RAM数据段结束地址（查看当前是否到达了RAM 数据段的结束地址）
+  bcc CopyDataInit      // 如果r4寄存器的值小于r1寄存器的值（未到达RAM的数据段结束地址），则跳转到CopyDataInit标签
+
 
 /* Zero fill the bss segment. */
 /*零填充bss区段。*/
-  ldr r2, =_sbss
-  ldr r4, =_ebss
-  movs r3, #0
-  b LoopFillZerobss
+  ldr r2, =_sbss        // 将_sbss的地址加载到r2寄存器中（bss段起始地址）
+  ldr r4, =_ebss        // 将_ebss的地址加载到r4寄存器中（bss段终止地址）
+  movs r3, #0           // 将0移动到r3寄存器中（bss段的填充数值）
+  b LoopFillZerobss     // 跳转到LoopFillZerobss标签处
 
 FillZerobss:
-  str  r3, [r2]
-  adds r2, r2, #4
+  str  r3, [r2]         // 将r3寄存器中的值存储到r2寄存器所指向的内存地址中（将r2地址指向的数值填充为0）
+  adds r2, r2, #4       // 将r2寄存器的值加上4，并将结果存储到r2寄存器中（移动到下一个地址继续填充）
 
 LoopFillZerobss:
-  cmp r2, r4
-  bcc FillZerobss
+  cmp r2, r4          // 比较r2寄存器与_ebss的地址（如果到达结束地址的下一位地址则取消填充）
+  bcc FillZerobss     // 如果r2寄存器的值小于_ebss的地址（是否达到bss段的结束地址），则跳转到FillZerobss标签处
 
 /* Call the clock system initialization function.*/
-/*调用时钟系统初始化函数。移动完数据再初始化系统！*/
+/*调用时钟系统初始化函数。*/
   bl  SystemInit
 
 /* Call static constructors */
 /*调用静态构造函数*/
   bl __libc_init_array
+
 /* Call the application s entry point.*/
 /*调用应用程序的入口点。*/
   bl main
@@ -117,8 +130,9 @@ LoopFillZerobss:
 LoopForever:
   b LoopForever
 
+ /*设置Reset_Handle的大小，值为：当前位置-（减去）Reset_Handler的起始位置 */
+ /*.表示当前地址 Reset_Handler 表示 Reset_Handler 的起始位置*/
 .size Reset_Handler, .-Reset_Handler
-
 /**
  * @brief  This is the code that gets called when the processor receives an
  *         unexpected interrupt.  This simply enters an infinite loop, preserving
@@ -136,10 +150,23 @@ LoopForever:
 * @param None
 * @retval None
 */
+
+/*定义一个名为 .text.Default_Handler 的代码段（Section） */
+/*.text段用于存储可执行代码 */
+/*"ax"为段属性标志 a:表示该段需要分配内存，x:表示该段可执行 */
+/*%progbits：段类型，表示该段包含实际数据（代码或初始化数据） */
   .section .text.Default_Handler,"ax",%progbits
+
+/*Default_Handler：定义一个默认中断符号，出现未定义的中断触发时将跳转到这里 */
 Default_Handler:
+
+/*Infinite_Loop：定义一个循环符号， b Infinite_Loop：无条件跳转到Infinite_Loop实现死循环。 */
+/*用途：当出现未被定义的中断时跳转至此进行死循环防止程序跑飞 */
 Infinite_Loop:
   b Infinite_Loop
+
+/*设置 Default_Handler 的大小，值为：当前位置-（减去）Default_Handler的起始位置 */
+/*.表示当前地址 Default_Handler 表示 Default_Handler 的起始位置*/
   .size Default_Handler, .-Default_Handler
 
 /******************************************************************************
@@ -156,25 +183,35 @@ Infinite_Loop:
 * 0x0000.0000。
 *
 ******************************************************************************/
+  /*定义一个名为 .isr_vector 的段（Section），专门用于存放中断向量表 */
+  /*"a"段属性标志 a:表示该段需要分配内存 */
+  /*%progbits：段类型，表示该段包含实际数据（中断服务函数的地址） */
   .section .isr_vector,"a",%progbits
+
+  /*声明符号 g_pfnVectors 的类型为数据对象 */
+  /*%object：表示符号对应的是一个数据对象（如数组、结构体等） */
+  /*g_pfnVectors 是一个函数指针数组，每个元素指向一个中断服务函数 */
   .type g_pfnVectors, %object
+
+  /*设置 g_pfnVectors 的大小为当前位置减去 g_pfnVectors 的起始位置 */
+  /*设置符号 g_pfnVectors 的大小为整个中断向量表的字节长度 */
   .size g_pfnVectors, .-g_pfnVectors
 
 g_pfnVectors:
-  .word  _estack
+  .word  _estack                        /* Top of Stack */
   .word  Reset_Handler                  /* Reset Handler */
   .word  NMI_Handler                    /* NMI Handler */
   .word  HardFault_Handler              /* Hard Fault Handler */
-  .word  0                              /* Reserved */
-  .word  0                              /* Reserved */
-  .word  0                              /* Reserved */
-  .word  0                              /* Reserved */
-  .word  0                              /* Reserved */
-  .word  0                              /* Reserved */
-  .word  0                              /* Reserved */
+  .word  Default_Handler                /* Reserved */
+  .word  Default_Handler                /* Reserved */
+  .word  Default_Handler                /* Reserved */
+  .word  Default_Handler                /* Reserved */
+  .word  Default_Handler                /* Reserved */
+  .word  Default_Handler                /* Reserved */
+  .word  Default_Handler                /* Reserved */
   .word  SVC_Handler                    /* SVCall Handler */
-  .word  0                              /* Reserved */
-  .word  0                              /* Reserved */
+  .word  Default_Handler                /* Reserved */
+  .word  Default_Handler                /* Reserved */
   .word  PendSV_Handler                 /* PendSV Handler */
   .word  SysTick_Handler                /* SysTick Handler */
 
@@ -185,30 +222,30 @@ g_pfnVectors:
   .word SYSCTRL_IRQHandler        /* 4 System Control Interrupt Handler          */
   .word GPIOA_IRQHandler          /* 5 GPIOA Interrupt Handler                   */
   .word GPIOB_IRQHandler          /* 6 GPIOB Interrupt Handler                   */
-  .word 0                         /* 7 Reserved                                  */
-  .word 0                         /* 8 Reserved                                  */
-  .word 0                         /* 9 Reserved                                  */
-  .word 0                         /* 10 Reserved                                 */
-  .word 0                         /* 11 Reserved                                 */
+  .word Default_Handler           /* 7 Reserved                                  */
+  .word Default_Handler           /* 8 Reserved                                  */
+  .word Default_Handler           /* 9 Reserved                                  */
+  .word Default_Handler           /* 10 Reserved                                 */
+  .word Default_Handler           /* 11 Reserved                                 */
   .word ADC_IRQHandler            /* 12 ADC Interrupt Handler                    */
   .word ATIM_IRQHandler           /* 13 Advanced Timer Interrupt Handler         */
   .word VC1_IRQHandler            /* 14 Voltage Comparator 1 Interrupt Handler   */
   .word VC2_IRQHandler            /* 15 Voltage Comparator 2 Interrupt Handler   */
   .word GTIM1_IRQHandler          /* 16 General Timer1 Interrupt Handler         */
-  .word 0                         /* 17 Reserved                                 */
-  .word 0                         /* 18 Reserved                                 */
+  .word Default_Handler           /* 17 Reserved                                 */
+  .word Default_Handler           /* 18 Reserved                                 */
   .word LPTIM_IRQHandler          /* 19 Low Power Timer Interrupt Handler        */
   .word BTIM1_IRQHandler          /* 20 Base Timer1 Interrupt Handler            */
   .word BTIM2_IRQHandler          /* 21 Base Timer2 Interrupt Handler            */
   .word BTIM3_IRQHandler          /* 22 Base Timer3 Interrupt Handler            */
   .word I2C1_IRQHandler           /* 23 I2C1 Interrupt Handler                   */
-  .word 0                         /* 24 Reserved                                 */
+  .word Default_Handler           /* 24 Reserved                                 */
   .word SPI1_IRQHandler           /* 25 SPI Interrupt Handler                    */
-  .word 0                         /* 26 Reserved                                 */
+  .word Default_Handler           /* 26 Reserved                                 */
   .word UART1_IRQHandler          /* 27 UART1 Interrupt Handler                  */
   .word UART2_IRQHandler          /* 28 UART2 Interrupt Handler                  */
-  .word 0                         /* 29 Reserved                                 */
-  .word 0                         /* 30 Reserved                                 */
+  .word Default_Handler           /* 29 Reserved                                 */
+  .word Default_Handler           /* 30 Reserved                                 */
   .word CLKFAULT_IRQHandler       /* 31 Clock Fault Interrupt Handler            */
 
 /*******************************************************************************
@@ -216,7 +253,7 @@ g_pfnVectors:
 *为Default_Handler的每个异常处理程序提供弱别名。
 *由于它们是弱别名，任何同名的函数都将被覆盖
 *这个定义。
-*不能weak Reset_Handler!!!
+*禁止在此重复弱定义Reset_Handler！！！
 *******************************************************************************/
   .weak      NMI_Handler
   .thumb_set NMI_Handler,Default_Handler
