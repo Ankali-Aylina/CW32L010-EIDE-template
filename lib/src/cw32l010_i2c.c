@@ -292,6 +292,10 @@ void I2C_Master_Init(I2C_TypeDef* I2Cx,I2C_InitTypeDef *I2C_InitStruct)
         else
             BRR_Value = 1;    // 缺省值为1
     }
+    if (BRR_Value > 0xff)
+    {
+        BRR_Value = 0xff;    // 超上限后，设置为上限值
+    }
     
     I2C_SetBaud(I2Cx,BRR_Value);
     

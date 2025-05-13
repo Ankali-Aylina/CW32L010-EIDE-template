@@ -20,3 +20,9 @@
 
 - v0.0.5 修复了.s文件中的严重错误，请拉取全新库！
 - v0.0.5 fixes a serious error in the .s file, please pull the new library!
+
+----
+- v0.0.6 更新了lib文件为官方的v1.0.4版本。
+- **注意：该文件未同步官方v1.0.4固件库的.svd文件以及.pack文件！！！由于pyOCD解析v1.0.4的.svd文件会出现异常错误，因此未同步！！！**
+- V0.0.6 updated the lib file to the official v1.0.4 version.
+- **Note: this file is not synchronized with the .svd file and .pack file of the official v1.0.4 firmware library! ! ! Because pyOCD will have an abnormal error when parsing the .svd file of v1.0.4, it is not synchronized! ! !**

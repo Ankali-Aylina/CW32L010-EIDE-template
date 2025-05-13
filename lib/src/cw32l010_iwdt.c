@@ -47,7 +47,7 @@ int IWDT_Init(IWDT_InitTypeDef *IWDT_InitStruct)
     assert_param(IS_IWDT_WINDOW_VALUE(IWDT_InitStruct->IWDT_WindowValue));
     assert_param(IS_IWDT_RELOAD(IWDT_InitStruct->IWDT_ReloadValue));
     
-    CW_SYSCTRL->APBEN2_f.IWDT = 1;
+    __SYSCTRL_IWDT_CLK_ENABLE();
     __IWDT_RUN();                // 需要先启动IWDT后，才能修改其他寄存器
     __IWDT_UNLOCK();             // 解锁寄存器保护
     if (IWDT_InitStruct->IWDT_ITState == ENABLE)

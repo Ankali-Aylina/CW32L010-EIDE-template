@@ -11,6 +11,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "cw32l010_lptim.h"
+#include "cw32l010_sysctrl.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -40,6 +41,7 @@ void LPTIM_Init(LPTIM_InitTypeDef* LPTIM_InitStruct)
     assert_param(IS_LPTIM_COUNTER_MODE(LPTIM_InitStruct->LPTIM_CounterMode));
     assert_param(IS_LPTIM_PRS(LPTIM_InitStruct->LPTIM_Prescaler));
 
+    __SYSCTRL_LPTIM_CLK_ENABLE();
     CW_LPTIM->ARR = LPTIM_InitStruct->LPTIM_Period;
     CW_LPTIM->CFGR = LPTIM_InitStruct->LPTIM_Prescaler | LPTIM_InitStruct->LPTIM_ClockSource | LPTIM_InitStruct->LPTIM_CounterMode;
 }

@@ -32,6 +32,7 @@
 #include "cw32l010.h"
 #include "cw32l010_vc.h"
 #include "cw32l010_adc.h"
+#include "cw32l010_sysctrl.h"
 
 /**
  ******************************************************************************
@@ -225,7 +226,7 @@ void VC1VC2_DIVInit(VC_DivTypeDef* VC_DivStruct)
 
     REGBITS_MODIFY(CW_VCREF->CR, VCREF_CR_EN_Msk | VCREF_CR_VIN_Msk, \
                    VC_DivStruct->VC_DivEn | VC_DivStruct->VC_DivVref);
-	
+
     if (VC_DivStruct->VC_DivValue < 0x08)
     {
         CW_VCREF->CR_f.DIV = VC_DivStruct->VC_DivValue;
@@ -245,7 +246,7 @@ void VC1VC2_DIVInit(VC_DivTypeDef* VC_DivStruct)
  */
 void VC1VC2_DIVDeInit(void)
 {
-    CW_VCREF->CR= 0x0u;
+    CW_VCREF->CR = 0x0u;
     CW_VCREF->CR = 0x0u;
 }
 
@@ -261,13 +262,14 @@ void VC1VC2_INNInit(VC_InitTypeDef* VC_InitStruct)
 {
     ASSERT(NULL != VC_InitStruct)
     assert_param(IS_VC_INPUT_N(VC_InitStruct->VC_InputN));
-								 if(VC_InitStruct->VC_InputN==VC_InputN_Bgr1P2)
-									{     
-										//VCx负端输入信号为BGR 1.2V
-            //打开ADC时钟
-            REGBITS_SET( CW_SYSCTRL->APBEN1, SYSCTRL_APBEN1_ADC_Msk );
-            REGBITS_SET(CW_ADC->CR, ADC_CR_BGREN_Msk);
-									}
+
+    if (VC_InitStruct->VC_InputN == VC_InputN_Bgr1P2)
+    {
+        //VCx负端输入信号为BGR 1.2V
+        //打开ADC时钟
+        REGBITS_SET(CW_SYSCTRL->APBEN1, (SYSCTRL_KEY | SYSCTRL_APB1_PERIPH_ADC));
+        REGBITS_SET(CW_ADC->CR, ADC_CR_BGREN_Msk);
+    }
 }
 
 /**
@@ -284,14 +286,14 @@ void VC1_ChannelInit(VC_InitTypeDef* VC_InitStruct)
     assert_param(IS_VC_INPUT_P(VC_InitStruct->VC_InputP));
     assert_param(IS_VC_INPUT_N(VC_InitStruct->VC_InputN));
     assert_param(IS_VC_HYS(VC_InitStruct->VC_Hys));
-    assert_param(IS_VC_RESP(VC_InitStruct->VC_Resp));  
+    assert_param(IS_VC_RESP(VC_InitStruct->VC_Resp));
     assert_param(IS_VC_FLT_CLK(VC_InitStruct->VC_FilterClk));
     assert_param(IS_VC_FLT_TIME(VC_InitStruct->VC_FilterTime));
     assert_param(IS_VC_WINDOW(VC_InitStruct->VC_Window));
     assert_param(IS_VC_POLARITY(VC_InitStruct->VC_Polarity));
 
     REGBITS_MODIFY(CW_VC1->CR0, \
-                   VCx_CR0_INN_Msk  |VCx_CR0_INP_Msk  | \
+                   VCx_CR0_INN_Msk  | VCx_CR0_INP_Msk  | \
                    VCx_CR0_WINDOW_Msk | VCx_CR0_POL_Msk | \
                    VCx_CR0_HYS_Msk | VCx_CR0_RESP_Msk, \
                    VC_InitStruct->VC_InputN | \
@@ -302,7 +304,7 @@ void VC1_ChannelInit(VC_InitTypeDef* VC_InitStruct)
                    VC_InitStruct->VC_Resp);
 
     REGBITS_MODIFY(CW_VC1->CR1, \
-                   VCx_CR1_FLTCLK_Msk | VCx_CR1_FLTTIME_Msk , \
+                   VCx_CR1_FLTCLK_Msk | VCx_CR1_FLTTIME_Msk, \
                    VC_InitStruct->VC_FilterClk | \
                    VC_InitStruct->VC_FilterTime );
 
@@ -331,7 +333,7 @@ void VC2_ChannelInit(VC_InitTypeDef* VC_InitStruct)
     assert_param(IS_VC_POLARITY(VC_InitStruct->VC_Polarity));
 
     REGBITS_MODIFY(CW_VC2->CR0, \
-                   VCx_CR0_INN_Msk  |VCx_CR0_INP_Msk  | \
+                   VCx_CR0_INN_Msk  | VCx_CR0_INP_Msk  | \
                    VCx_CR0_WINDOW_Msk | VCx_CR0_POL_Msk | \
                    VCx_CR0_HYS_Msk | VCx_CR0_RESP_Msk, \
                    VC_InitStruct->VC_InputN | \
@@ -342,7 +344,7 @@ void VC2_ChannelInit(VC_InitTypeDef* VC_InitStruct)
                    VC_InitStruct->VC_Resp);
 
     REGBITS_MODIFY(CW_VC2->CR1, \
-                   VCx_CR1_FLTCLK_Msk | VCx_CR1_FLTTIME_Msk , \
+                   VCx_CR1_FLTCLK_Msk | VCx_CR1_FLTTIME_Msk, \
                    VC_InitStruct->VC_FilterClk | \
                    VC_InitStruct->VC_FilterTime );
 
@@ -359,9 +361,9 @@ void VC2_ChannelInit(VC_InitTypeDef* VC_InitStruct)
 void VC_DeInit(void)
 {
     // Enable VC reset state
-    REGBITS_CLR(CW_SYSCTRL->APBRST2, 0x5A5A0000U|SYSCTRL_APBRST1_VC_Msk);
+    REGBITS_CLR(CW_SYSCTRL->APBRST2, 0x5A5A0000U | SYSCTRL_APBRST1_VC_Msk);
     // Release VC from reset state
-    REGBITS_SET(CW_SYSCTRL->APBRST2, 0x5A5A0000U|SYSCTRL_APBRST1_VC_Msk);
+    REGBITS_SET(CW_SYSCTRL->APBRST2, 0x5A5A0000U | SYSCTRL_APBRST1_VC_Msk);
 
     VC1_ChannelDeInit();
     VC2_ChannelDeInit();
@@ -413,7 +415,7 @@ void VC1_EnableChannel(void)
 void VC2_EnableChannel(void)
 {
     REGBITS_SET(CW_VC2->CR0, VCx_CR0_EN_Msk);
-	   FirmwareDelay(50);
+    FirmwareDelay(50);
 }
 
 /**
@@ -451,8 +453,8 @@ void VC2_DisableChannel(void)
 void VC1VC2_BlankInit(VC_BlankTypeDef* VC_BlankStruct)
 {
     VC_BlankStruct->VC_BlankTime = 0u;
-				VC_BlankStruct->VC_BlankLevel = 0u;
-				VC_BlankStruct->VC_BlankCh6 = 0u;
+    VC_BlankStruct->VC_BlankLevel = 0u;
+    VC_BlankStruct->VC_BlankCh6 = 0u;
     VC_BlankStruct->VC_BlankCh5 = 0u;
     VC_BlankStruct->VC_BlankCh4 = 0u;
     VC_BlankStruct->VC_BlankCh3 = 0u;
@@ -471,8 +473,8 @@ void VC1_BlankCfg(VC_BlankTypeDef* VC_BlankStruct)
 {
     ASSERT(NULL != VC_BlankStruct)
     assert_param(IS_VC_BLANK_TIME(VC_BlankStruct->VC_BlankTime));
-	   assert_param(IS_VC_BLANK_CH6(VC_BlankStruct->VC_BlankCh6));
-	   assert_param(IS_VC_BLANK_CH6(VC_BlankStruct->VC_BlankCh6));
+    assert_param(IS_VC_BLANK_CH6(VC_BlankStruct->VC_BlankCh6));
+    assert_param(IS_VC_BLANK_CH6(VC_BlankStruct->VC_BlankCh6));
     assert_param(IS_VC_BLANK_CH5(VC_BlankStruct->VC_BlankCh5));
     assert_param(IS_VC_BLANK_CH4(VC_BlankStruct->VC_BlankCh4));
     assert_param(IS_VC_BLANK_CH3(VC_BlankStruct->VC_BlankCh3));
@@ -480,12 +482,12 @@ void VC1_BlankCfg(VC_BlankTypeDef* VC_BlankStruct)
     assert_param(IS_VC_BLANK_CH1(VC_BlankStruct->VC_BlankCh1));
 
     REGBITS_MODIFY(CW_VC1->CR1, \
-                   VCx_CR1_BLANKTIME_Msk  | VCx_CR1_BLANKLVL_Msk | VCx_CR1_BLANKATCH6_Msk |\
-                   VCx_CR1_BLANKATCH5_Msk | VCx_CR1_BLANKATCH4_Msk |VCx_CR1_BLANKATCH3_Msk| \
+                   VCx_CR1_BLANKTIME_Msk  | VCx_CR1_BLANKLVL_Msk | VCx_CR1_BLANKATCH6_Msk | \
+                   VCx_CR1_BLANKATCH5_Msk | VCx_CR1_BLANKATCH4_Msk | VCx_CR1_BLANKATCH3_Msk | \
                    VCx_CR1_BLANKATCH2_Msk | VCx_CR1_BLANKATCH1_Msk,
                    VC_BlankStruct->VC_BlankTime | \
-				               VC_BlankStruct->VC_BlankLevel | \
-				               VC_BlankStruct->VC_BlankCh6 | \
+                   VC_BlankStruct->VC_BlankLevel | \
+                   VC_BlankStruct->VC_BlankCh6 | \
                    VC_BlankStruct->VC_BlankCh5 | \
                    VC_BlankStruct->VC_BlankCh4 | \
                    VC_BlankStruct->VC_BlankCh3 | \
@@ -504,8 +506,8 @@ void VC2_BlankCfg(VC_BlankTypeDef* VC_BlankStruct)
 {
     ASSERT(NULL != VC_BlankStruct)
     assert_param(IS_VC_BLANK_TIME(VC_BlankStruct->VC_BlankTime));
-   	assert_param(IS_VC_BLANK_CH6(VC_BlankStruct->VC_BlankCh6));
-   	assert_param(IS_VC_BLANK_CH6(VC_BlankStruct->VC_BlankCh6));
+    assert_param(IS_VC_BLANK_CH6(VC_BlankStruct->VC_BlankCh6));
+    assert_param(IS_VC_BLANK_CH6(VC_BlankStruct->VC_BlankCh6));
     assert_param(IS_VC_BLANK_CH5(VC_BlankStruct->VC_BlankCh5));
     assert_param(IS_VC_BLANK_CH4(VC_BlankStruct->VC_BlankCh4));
     assert_param(IS_VC_BLANK_CH3(VC_BlankStruct->VC_BlankCh3));
@@ -513,12 +515,12 @@ void VC2_BlankCfg(VC_BlankTypeDef* VC_BlankStruct)
     assert_param(IS_VC_BLANK_CH1(VC_BlankStruct->VC_BlankCh1));
 
     REGBITS_MODIFY(CW_VC2->CR1, \
-                   VCx_CR1_BLANKTIME_Msk  | VCx_CR1_BLANKLVL_Msk | VCx_CR1_BLANKATCH6_Msk |\
-                   VCx_CR1_BLANKATCH5_Msk | VCx_CR1_BLANKATCH4_Msk |VCx_CR1_BLANKATCH3_Msk| \
+                   VCx_CR1_BLANKTIME_Msk  | VCx_CR1_BLANKLVL_Msk | VCx_CR1_BLANKATCH6_Msk | \
+                   VCx_CR1_BLANKATCH5_Msk | VCx_CR1_BLANKATCH4_Msk | VCx_CR1_BLANKATCH3_Msk | \
                    VCx_CR1_BLANKATCH2_Msk | VCx_CR1_BLANKATCH1_Msk,
                    VC_BlankStruct->VC_BlankTime | \
-				               VC_BlankStruct->VC_BlankLevel | \
-				               VC_BlankStruct->VC_BlankCh6 | \
+                   VC_BlankStruct->VC_BlankLevel | \
+                   VC_BlankStruct->VC_BlankCh6 | \
                    VC_BlankStruct->VC_BlankCh5 | \
                    VC_BlankStruct->VC_BlankCh4 | \
                    VC_BlankStruct->VC_BlankCh3 | \
@@ -623,6 +625,7 @@ void VC1_ITConfig(uint16_t VC_IT, FunctionalState NewState)
     /* Check the parameters */
     assert_param(IS_FUNCTIONAL_STATE(NewState));
     assert_param(IS_VC_IT(VC_IT));
+
     if (NewState != DISABLE)
     {
         /* Enable the selected VC interrupts */
@@ -655,6 +658,7 @@ void VC2_ITConfig(uint16_t VC_IT, FunctionalState NewState)
     assert_param(IS_VC_IT(VC_IT));
     /* Get the VC IT index */
     itMask = (uint8_t) VC_IT;
+
     if (NewState != DISABLE)
     {
         /* Enable the selected VC interrupts */

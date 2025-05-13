@@ -86,7 +86,7 @@ int32_t main(void)
     {
        for(i=0;i<80000;i++);
        PA00_TOG();	PA01_TOG();	PA02_TOG();	PA03_TOG();	PA04_TOG();	PA05_TOG();	PA06_TOG();	PA07_TOG();	PA08_TOG();	
-       PB00_TOG();	PB01_TOG();	PB02_TOG();	PB03_TOG();	PB04_TOG();	PB05_TOG();	PB06_TOG();	PB07_TOG();	 
+       PB00_TOG();	PB01_TOG();	PB02_TOG();	PB03_TOG();	PB04_TOG();	PB05_TOG();	PB06_TOG();	 
     }
 
 }

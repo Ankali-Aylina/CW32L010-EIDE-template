@@ -171,6 +171,7 @@ void ATIM_IC1Init(ATIM_ICInitTypeDef *ATIM_ICInitStruct)
     CW_ATIM->CCMR1CAP_f.IC1F = ATIM_ICInitStruct->ICFilter;
     
     CW_ATIM->CCER_f.CC1P = ATIM_ICInitStruct->ICPolarity;
+    CW_ATIM->CCER_f.CC1NP = ATIM_ICInitStruct->ICPolarity>>1;
     CW_ATIM->CCER_f.CC1E = 1;                     
 }
 
@@ -184,6 +185,7 @@ void ATIM_IC2Init(ATIM_ICInitTypeDef *ATIM_ICInitStruct)
     CW_ATIM->CCMR1CAP_f.IC2F = ATIM_ICInitStruct->ICFilter;
     
     CW_ATIM->CCER_f.CC2P = ATIM_ICInitStruct->ICPolarity;
+    CW_ATIM->CCER_f.CC2NP = ATIM_ICInitStruct->ICPolarity>>1;
     CW_ATIM->CCER_f.CC2E = 1;                     
 }
 
@@ -197,6 +199,7 @@ void ATIM_IC3Init(ATIM_ICInitTypeDef *ATIM_ICInitStruct)
     CW_ATIM->CCMR2CAP_f.IC3F = ATIM_ICInitStruct->ICFilter;
     
     CW_ATIM->CCER_f.CC3P = ATIM_ICInitStruct->ICPolarity;
+    CW_ATIM->CCER_f.CC3NP = ATIM_ICInitStruct->ICPolarity>>1;
     CW_ATIM->CCER_f.CC3E = 1;                     
 }
 
@@ -210,6 +213,7 @@ void ATIM_IC4Init(ATIM_ICInitTypeDef *ATIM_ICInitStruct)
     CW_ATIM->CCMR2CAP_f.IC4F = ATIM_ICInitStruct->ICFilter;
     
     CW_ATIM->CCER_f.CC4P = ATIM_ICInitStruct->ICPolarity;
+    CW_ATIM->CCER_f.CC4NP = ATIM_ICInitStruct->ICPolarity>>1;
     CW_ATIM->CCER_f.CC4E = 1;                     
 }
 
@@ -223,6 +227,7 @@ void ATIM_IC5Init(ATIM_ICInitTypeDef *ATIM_ICInitStruct)
     CW_ATIM->CCMR3CAP_f.IC5F = ATIM_ICInitStruct->ICFilter;
     
     CW_ATIM->CCER_f.CC5P = ATIM_ICInitStruct->ICPolarity;
+    CW_ATIM->CCER_f.CC5NP = ATIM_ICInitStruct->ICPolarity>>1;
     CW_ATIM->CCER_f.CC5E = 1;                     
 }
 
@@ -236,12 +241,14 @@ void ATIM_IC6Init(ATIM_ICInitTypeDef *ATIM_ICInitStruct)
     CW_ATIM->CCMR3CAP_f.IC6F = ATIM_ICInitStruct->ICFilter;
     
     CW_ATIM->CCER_f.CC6P = ATIM_ICInitStruct->ICPolarity;
+    CW_ATIM->CCER_f.CC6NP = ATIM_ICInitStruct->ICPolarity>>1;
     CW_ATIM->CCER_f.CC6E = 1;                     
 }
 
 void ATIM_OC1Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
 {
     assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCPolarity));
+    assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCNPolarity));
     assert_param(IS_ATIM_OC_MODE(TIM_OCInitStruct->OCMode));
     assert_param(IS_ATIM_OC_FAST_MODE(TIM_OCInitStruct->OCFastMode));
     assert_param(IS_FUNCTIONAL_STATE(TIM_OCInitStruct->BufferState));
@@ -251,7 +258,8 @@ void ATIM_OC1Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
     CW_ATIM->CCMR1CMP_f.OC1PE = TIM_OCInitStruct->BufferState;
     CW_ATIM->CCMR1CMP_f.OC1M = TIM_OCInitStruct->OCMode & 0x07;
     CW_ATIM->CCMR1CMP_f.OC1MH = TIM_OCInitStruct->OCMode >> 3;
-    
+    CW_ATIM->CCER_f.CC1NP = TIM_OCInitStruct->OCNPolarity;
+    CW_ATIM->CCER_f.CC1P = TIM_OCInitStruct->OCPolarity;
     CW_ATIM->CCER_f.CC1NE = TIM_OCInitStruct->OCComplement;
     
 }
@@ -259,6 +267,7 @@ void ATIM_OC1Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
 void ATIM_OC2Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
 {
     assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCPolarity));
+    assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCNPolarity));
     assert_param(IS_ATIM_OC_MODE(TIM_OCInitStruct->OCMode));
     assert_param(IS_ATIM_OC_FAST_MODE(TIM_OCInitStruct->OCFastMode));
     assert_param(IS_FUNCTIONAL_STATE(TIM_OCInitStruct->BufferState));
@@ -268,13 +277,15 @@ void ATIM_OC2Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
     CW_ATIM->CCMR1CMP_f.OC2PE = TIM_OCInitStruct->BufferState;
     CW_ATIM->CCMR1CMP_f.OC2M = TIM_OCInitStruct->OCMode & 0x07;
     CW_ATIM->CCMR1CMP_f.OC2MH = TIM_OCInitStruct->OCMode >> 3;
-    
+    CW_ATIM->CCER_f.CC2P = TIM_OCInitStruct->OCPolarity;
+    CW_ATIM->CCER_f.CC2NP = TIM_OCInitStruct->OCNPolarity;
     CW_ATIM->CCER_f.CC2NE = TIM_OCInitStruct->OCComplement;
 }
 
 void ATIM_OC3Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
 {
     assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCPolarity));
+    assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCNPolarity));
     assert_param(IS_ATIM_OC_MODE(TIM_OCInitStruct->OCMode));
     assert_param(IS_ATIM_OC_FAST_MODE(TIM_OCInitStruct->OCFastMode));
     assert_param(IS_FUNCTIONAL_STATE(TIM_OCInitStruct->BufferState));
@@ -284,13 +295,15 @@ void ATIM_OC3Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
     CW_ATIM->CCMR2CMP_f.OC3PE = TIM_OCInitStruct->BufferState;
     CW_ATIM->CCMR2CMP_f.OC3M = TIM_OCInitStruct->OCMode & 0x07;
     CW_ATIM->CCMR2CMP_f.OC3MH = TIM_OCInitStruct->OCMode >> 3;
-    
+    CW_ATIM->CCER_f.CC3P = TIM_OCInitStruct->OCPolarity;
+    CW_ATIM->CCER_f.CC3NP = TIM_OCInitStruct->OCNPolarity;
     CW_ATIM->CCER_f.CC3NE = TIM_OCInitStruct->OCComplement;
 }
 
 void ATIM_OC4Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
 {
     assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCPolarity));
+    assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCNPolarity));
     assert_param(IS_ATIM_OC_MODE(TIM_OCInitStruct->OCMode));
     assert_param(IS_ATIM_OC_FAST_MODE(TIM_OCInitStruct->OCFastMode));
     assert_param(IS_FUNCTIONAL_STATE(TIM_OCInitStruct->BufferState));
@@ -300,13 +313,15 @@ void ATIM_OC4Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
     CW_ATIM->CCMR2CMP_f.OC4PE = TIM_OCInitStruct->BufferState;
     CW_ATIM->CCMR2CMP_f.OC4M = TIM_OCInitStruct->OCMode & 0x07;
     CW_ATIM->CCMR2CMP_f.OC4MH = TIM_OCInitStruct->OCMode >> 3;    
-    
+    CW_ATIM->CCER_f.CC4P = TIM_OCInitStruct->OCPolarity;
+    CW_ATIM->CCER_f.CC4NP = TIM_OCInitStruct->OCNPolarity;
     CW_ATIM->CCER_f.CC4NE = TIM_OCInitStruct->OCComplement;
 }
 
 void ATIM_OC5Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
 {
     assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCPolarity));
+    assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCNPolarity));
     assert_param(IS_ATIM_OC_MODE(TIM_OCInitStruct->OCMode));
     assert_param(IS_ATIM_OC_FAST_MODE(TIM_OCInitStruct->OCFastMode));
     assert_param(IS_FUNCTIONAL_STATE(TIM_OCInitStruct->BufferState));
@@ -316,13 +331,15 @@ void ATIM_OC5Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
     CW_ATIM->CCMR3CMP_f.OC5PE = TIM_OCInitStruct->BufferState;
     CW_ATIM->CCMR3CMP_f.OC5M = TIM_OCInitStruct->OCMode & 0x07;
     CW_ATIM->CCMR3CMP_f.OC5MH = TIM_OCInitStruct->OCMode >> 3;
-    
+    CW_ATIM->CCER_f.CC5P = TIM_OCInitStruct->OCPolarity;
+    CW_ATIM->CCER_f.CC5NP = TIM_OCInitStruct->OCNPolarity;
     CW_ATIM->CCER_f.CC5NE = TIM_OCInitStruct->OCComplement;
 }
 
 void ATIM_OC6Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
 {
     assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCPolarity));
+    assert_param(IS_ATIM_OC_POLARITY(TIM_OCInitStruct->OCNPolarity));
     assert_param(IS_ATIM_OC_MODE(TIM_OCInitStruct->OCMode));
     assert_param(IS_ATIM_OC_FAST_MODE(TIM_OCInitStruct->OCFastMode));
     assert_param(IS_FUNCTIONAL_STATE(TIM_OCInitStruct->BufferState));
@@ -332,7 +349,8 @@ void ATIM_OC6Init(ATIM_OCInitTypeDef *TIM_OCInitStruct)
     CW_ATIM->CCMR3CMP_f.OC6PE = TIM_OCInitStruct->BufferState;
     CW_ATIM->CCMR3CMP_f.OC6M = TIM_OCInitStruct->OCMode & 0x07;
     CW_ATIM->CCMR3CMP_f.OC6MH = TIM_OCInitStruct->OCMode >> 3;
-    
+    CW_ATIM->CCER_f.CC6P = TIM_OCInitStruct->OCPolarity;
+    CW_ATIM->CCER_f.CC6NP = TIM_OCInitStruct->OCNPolarity;
     CW_ATIM->CCER_f.CC6NE = TIM_OCInitStruct->OCComplement;
 }
 

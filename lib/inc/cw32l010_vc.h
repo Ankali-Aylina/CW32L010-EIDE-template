@@ -151,6 +151,7 @@ extern "C"
 /** @defgroup VC_FilterTime
   * @{
   */
+#define VC_FilterTime_None    ((uint32_t)0x00000000)
 #define VC_FilterTime_1N2     ((uint32_t)0x00000001)
 #define VC_FilterTime_1N4     ((uint32_t)0x00000002)
 #define VC_FilterTime_1N8     ((uint32_t)0x00000003)
@@ -168,21 +169,22 @@ extern "C"
 #define VC_FilterTime_32N8    ((uint32_t)0x0000000F)
 
 
-#define IS_VC_FLT_TIME(FILTER_TIME)      (((FILTER_TIME) ==  VC_FilterTime_1N2)   || \
-          ((FILTER_TIME) == VC_FilterTime_1N4) || \
-          ((FILTER_TIME) == VC_FilterTime_1N8) || \
-          ((FILTER_TIME) == VC_FilterTime_2N6) || \
-          ((FILTER_TIME) == VC_FilterTime_2N8) || \
-          ((FILTER_TIME) == VC_FilterTime_4N6) || \
-          ((FILTER_TIME) == VC_FilterTime_4N8) || \
-					((FILTER_TIME) == VC_FilterTime_8N6) || \
-					((FILTER_TIME) == VC_FilterTime_8N8) || \
-					((FILTER_TIME) == VC_FilterTime_16N5)|| \
-					((FILTER_TIME) == VC_FilterTime_16N6)|| \
-					((FILTER_TIME) == VC_FilterTime_16N8)|| \
-					((FILTER_TIME) == VC_FilterTime_32N5)|| \
-					((FILTER_TIME) == VC_FilterTime_32N6)|| \
-          ((FILTER_TIME) == VC_FilterTime_32N8))
+#define IS_VC_FLT_TIME(FILTER_TIME)      (((FILTER_TIME) ==  VC_FilterTime_None)   || \
+                                          ((FILTER_TIME) ==  VC_FilterTime_1N2)   || \
+                                          ((FILTER_TIME) == VC_FilterTime_1N4) || \
+                                          ((FILTER_TIME) == VC_FilterTime_1N8) || \
+                                          ((FILTER_TIME) == VC_FilterTime_2N6) || \
+                                          ((FILTER_TIME) == VC_FilterTime_2N8) || \
+                                          ((FILTER_TIME) == VC_FilterTime_4N6) || \
+                                          ((FILTER_TIME) == VC_FilterTime_4N8) || \
+                                          ((FILTER_TIME) == VC_FilterTime_8N6) || \
+                                          ((FILTER_TIME) == VC_FilterTime_8N8) || \
+                                          ((FILTER_TIME) == VC_FilterTime_16N5)|| \
+                                          ((FILTER_TIME) == VC_FilterTime_16N6)|| \
+                                          ((FILTER_TIME) == VC_FilterTime_16N8)|| \
+                                          ((FILTER_TIME) == VC_FilterTime_32N5)|| \
+                                          ((FILTER_TIME) == VC_FilterTime_32N6)|| \
+                                          ((FILTER_TIME) == VC_FilterTime_32N8))
 
 /** @defgroup VC_WindowEn
   * @{
@@ -222,7 +224,7 @@ extern "C"
                                       ((BLANK_TIME) == VC_BlankTime_128Clk)  || \
                                       ((BLANK_TIME) == VC_BlankTime_256Clk)  || \
                                       ((BLANK_TIME) == VC_BlankTime_512Clk))
-																																						
+                                                                                                                                                        
 /** @defgroup VC_BlankLevel
   * @{
   */
@@ -231,7 +233,7 @@ extern "C"
 
 #define IS_VC_BLANK_LEVEL(BLANK_LEVEL)  (((BLANK_LEVEL) == VC_BlankLevel_low) || \
                                       ((BLANK_LEVEL) == VC_BlankLevel_high))
-																																				
+                                                                                                                                                
 /** @defgroup VC_BlankCh6
   * @{
   */
@@ -240,7 +242,7 @@ extern "C"
 
 #define IS_VC_BLANK_CH6(BLANK_CH6)  (((BLANK_CH6) == VC_BlankCh6_Disable) || \
                                       ((BLANK_CH6) == VC_BlankCh6_Enable))
-																																						
+                                                                                                                                                        
 /** @defgroup VC_BlankCh5
   * @{
   */
@@ -320,9 +322,9 @@ typedef struct
 typedef struct
 {
     uint32_t  VC_BlankTime;   /*Blank窗口持续时间*/
-	
-	  uint32_t  VC_BlankLevel;  /*Blank窗口期间输出电平配置*/
-	
+    
+    uint32_t  VC_BlankLevel;  /*Blank窗口期间输出电平配置*/
+    
     uint32_t  VC_BlankCh6;  /*ATIM的CH6触发VCx启动Blank窗口*/	
     
     uint32_t  VC_BlankCh5;  /*ATIM的CH5触发VCx启动Blank窗口*/

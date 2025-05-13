@@ -129,8 +129,6 @@ typedef enum
 #define PB05_ANALOG_ENABLE()               (CW_GPIOB->ANALOG_f.PIN5 = 1)
 #define PB06_DIGTAL_ENABLE()               (CW_GPIOB->ANALOG_f.PIN6 = 0)
 #define PB06_ANALOG_ENABLE()               (CW_GPIOB->ANALOG_f.PIN6 = 1)
-#define PB07_DIGTAL_ENABLE()               (CW_GPIOB->ANALOG_f.PIN7 = 0)
-#define PB07_ANALOG_ENABLE()               (CW_GPIOB->ANALOG_f.PIN7 = 1)
 
 //============================================================
 // INPUTAND OUTPUT
@@ -167,8 +165,7 @@ typedef enum
 #define PB05_DIR_INPUT()                   (CW_GPIOB->DIR_f.PIN5 = 1)
 #define PB06_DIR_OUTPUT()                  (CW_GPIOB->DIR_f.PIN6 = 0)
 #define PB06_DIR_INPUT()                   (CW_GPIOB->DIR_f.PIN6 = 1)
-#define PB07_DIR_OUTPUT()                  (CW_GPIOB->DIR_f.PIN7 = 0)
-#define PB07_DIR_INPUT()                   (CW_GPIOB->DIR_f.PIN7 = 1)
+
 
 //============================================================
 //push-pull or opendrain
@@ -205,8 +202,6 @@ typedef enum
 #define PB05_OPENDRAIN_ENABLE()            (CW_GPIOB->OPENDRAIN_f.PIN5 = 1)
 #define PB06_PUSHPULL_ENABLE()             (CW_GPIOB->OPENDRAIN_f.PIN6 = 0)
 #define PB06_OPENDRAIN_ENABLE()            (CW_GPIOB->OPENDRAIN_f.PIN6 = 1)
-#define PB07_PUSHPULL_ENABLE()             (CW_GPIOB->OPENDRAIN_f.PIN7 = 0)
-#define PB07_OPENDRAIN_ENABLE()            (CW_GPIOB->OPENDRAIN_f.PIN7 = 1)
 
 
 //============================================================
@@ -244,9 +239,6 @@ typedef enum
 #define PB05_PUR_DISABLE()                 (CW_GPIOB->PUR_f.PIN5 = 0)
 #define PB06_PUR_ENABLE()                  (CW_GPIOB->PUR_f.PIN6 = 1)
 #define PB06_PUR_DISABLE()                 (CW_GPIOB->PUR_f.PIN6 = 0)
-#define PB07_PUR_ENABLE()                  (CW_GPIOB->PUR_f.PIN7 = 1)
-#define PB07_PUR_DISABLE()                 (CW_GPIOB->PUR_f.PIN7 = 0)
-
 
 //============================================================
 // GETVALUE
@@ -267,7 +259,7 @@ typedef enum
 #define PB04_GETVALUE()                    !!(CW_GPIOB->IDR & bv4)
 #define PB05_GETVALUE()                    !!(CW_GPIOB->IDR & bv5)
 #define PB06_GETVALUE()                    !!(CW_GPIOB->IDR & bv6)
-#define PB07_GETVALUE()                    !!(CW_GPIOB->IDR & bv7)
+
 
 
 //============================================================
@@ -305,8 +297,7 @@ typedef enum
 #define PB05_SETLOW()                      (CW_GPIOB->BRR = bv5)
 #define PB06_SETHIGH()                     (CW_GPIOB->BSRR = bv6)
 #define PB06_SETLOW()                      (CW_GPIOB->BRR = bv6)
-#define PB07_SETHIGH()                     (CW_GPIOB->BSRR = bv7)
-#define PB07_SETLOW()                      (CW_GPIOB->BRR = bv7)
+
 
 
 //============================================================
@@ -329,7 +320,6 @@ typedef enum
 #define PB04_TOG()                         (CW_GPIOB->TOG = bv4)
 #define PB05_TOG()                         (CW_GPIOB->TOG = bv5)
 #define PB06_TOG()                         (CW_GPIOB->TOG = bv6)
-#define PB07_TOG()                         (CW_GPIOB->TOG = bv7)
 
 //============================================================
 // AF0 - AF7
@@ -479,11 +469,6 @@ typedef enum
 #define PB06_AFx_GTIM1CH1()                (CW_GPIOB->AFRL_f.AFR6 = 6)
 #define PB06_AFx_ATIMCH5N()                (CW_GPIOB->AFRL_f.AFR6 = 7)
 
-
-#define PB07_AFx_GPIO()                    (CW_GPIOB->AFRL_f.AFR7 = 0)
-#define PB07_AFx_GTIM1ETR()                (CW_GPIOB->AFRL_f.AFR7 = 5)
-#define PB07_AFx_ATIMETR()                 (CW_GPIOB->AFRL_f.AFR7 = 6)
-#define PB07_AFx_ATIMBK()                  (CW_GPIOB->AFRL_f.AFR7 = 7)
 
 //============================================================
 

@@ -109,7 +109,7 @@ extern "C" {
 #define SYSCTRL_HSEBRKEN                        bv10
 #define SYSCTRL_RTC_LOWPOWEREN                  bv7
 #define SYSCTRL_FLASHWAIT_24M                   (0x00UL)
-#define SYSCTRL_FLASHWAIT_48M                   (0x01UL << SYSCTRL_CR2_WAKEUPCLK_Pos)
+#define SYSCTRL_FLASHWAIT_48M                   (0x01UL << SYSCTRL_CR2_FLASHWAIT_Pos)
 #define IS_SYSCTRL_FLASHWAIT_VALUE(VAL)         (((VAL)==SYSCTRL_FLASHWAIT_24M) ||\
                                                   ((VAL) == SYSCTRL_FLASHWAIT_48M))
 

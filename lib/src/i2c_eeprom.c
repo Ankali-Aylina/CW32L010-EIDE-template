@@ -47,8 +47,8 @@ I2C_ErrorDef I2C_eepromWriteBytes(I2C_TypeDef* I2Cx,  uint8_t SlaveAddr, uint16_
         }
         else
         {
-            SendBuff[0] = (uint8_t)addr;
-            SendBuff[1] = (uint8_t)(addr>>8);
+			SendBuff[0] = (uint8_t)(addr>>8);
+            SendBuff[1] = (uint8_t)addr;
             for (i = 0; i< cnt; i++)
             {
                 SendBuff[i+2] = *buffer;
@@ -66,8 +66,8 @@ I2C_ErrorDef I2C_eepromWriteBytes(I2C_TypeDef* I2Cx,  uint8_t SlaveAddr, uint16_
 
 I2C_ErrorDef I2C_eepromReadBytes(I2C_TypeDef* I2Cx,  uint8_t SlaveAddr, uint16_t DataAddr, uint8_t *buffer, uint16_t Length)
 {
-    uint16_t addr = DataAddr;
-    
+    uint8_t addr[2];
+	
     if (Length == 0)
     {
         return I2C_NO_ERROR;
@@ -77,10 +77,13 @@ I2C_ErrorDef I2C_eepromReadBytes(I2C_TypeDef* I2Cx,  uint8_t SlaveAddr, uint16_t
     
     if (EEPROM_DATA_ADDR_WIDTH == 1)
     {
+		addr[0] = (uint8_t)DataAddr;
         I2C_MasterSendDataToSlave(I2Cx, SlaveAddr, (uint8_t *)(&addr), 1);
     }
     else
     {
+		addr[0] = (uint8_t)(DataAddr>>8);
+		addr[1] = (uint8_t)DataAddr;
         I2C_MasterSendDataToSlave(I2Cx, SlaveAddr, (uint8_t *)(&addr), 2);
     }
     

@@ -48,7 +48,9 @@ typedef struct
 
 typedef struct
 {
-    uint32_t OCPolarity;  /*!< 端口极性选择：正向、反向 */
+    uint32_t OCPolarity;   /*!< 端口极性选择：正向、反向 */
+    
+    uint32_t OCNPolarity;  /*!< 互补端口极性选择：正向、反向 */
 
     uint32_t OCMode;     /*!< 比较模式配置 */
     

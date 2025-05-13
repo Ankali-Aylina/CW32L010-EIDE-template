@@ -255,8 +255,8 @@ typedef struct
 #define UART_FLAG_RC                        ((uint16_t)0x0004)
 #define UART_FLAG_TC                        ((uint16_t)0x0002)
 #define UART_FLAG_TXE                       ((uint16_t)0x0001)
-#define IS_UART_FLAG(FLAG)                  ((((FLAG) & (uint16_t)0xF000) == 0x00) && ((FLAG) != (uint16_t)0x00))
-#define IS_UART_CLEAR_FLAG(FLAG)            ((((FLAG) & (uint16_t)0xF1A1) == 0x00) && ((FLAG) != (uint16_t)0x00))
+#define IS_UART_FLAG(FLAG)                  ((((FLAG) & (uint16_t)0x0000) == 0x00) && ((FLAG) != (uint16_t)0x00))
+#define IS_UART_CLEAR_FLAG(FLAG)            ((((FLAG) & (uint16_t)0xE001) == 0x00) && ((FLAG) != (uint16_t)0x00))
 
 #define IS_UART_BAUDRATE(BAUDRATE)          (((BAUDRATE) > 0) && ((BAUDRATE) <= 0x00B71B00))
 #define IS_UART_UCLKFREQ(UCLKFREQ)          (((UCLKFREQ) > 0) && ((UCLKFREQ) <= 0x02DC6C00))

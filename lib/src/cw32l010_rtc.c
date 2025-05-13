@@ -80,7 +80,7 @@ void RTC_DeInit(void)
 ErrorStatus RTC_Init(RTC_InitTypeDef* RTC_InitStruct)
 {
     assert_param(IS_RTC_RTCCLK_SOURCE(RTC_InitStruct->RTC_ClockSource));
-    CW_SYSCTRL->APBEN2_f.RTC = 1;            //  启动RTC外设时钟，使能RTC模块
+    __SYSCTRL_RTC_CLK_ENABLE();           //  启动RTC外设时钟，使能RTC模块
     if ((SYSCTRL_GetAllRstFlag() & SYSCTRL_RESETFLAG_POR) != SYSCTRL_RESETFLAG_POR)  //不是上电复位，直接退出 
     {    
         SYSCTRL_ClearRstFlag(SYSCTRL_RESETFLAG_ALL);        

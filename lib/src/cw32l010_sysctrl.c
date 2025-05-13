@@ -712,7 +712,7 @@ void SYSCTRL_AHBPeriphReset(uint32_t Periph, FunctionalState NewState)
 {
     assert_param(IS_SYSCTRL_AHB_PERIPH(Periph));
 
-    if (NewState != DISABLE)
+    if (NewState != ENABLE)
     {
         CW_SYSCTRL->AHBRST |= Periph;
     }
@@ -795,9 +795,10 @@ uint32_t SYSCTRL_GetAllRstFlag(void)
 /**
  * @brief 清除指定或者全部复位标志
  *
- * @param SYSCTRL_RSTFLAG  ：SYSCTRL_FLAG_PORRST   SYSCTRL_FLAG_SYSRESETREQRST
- *                           SYSCTRL_FLAG_LVDRST   SYSCTRL_FLAG_LOCKUPRST
- *                           SYSCTRL_FLAG_IWDTRST  SYSCTRL_FLAG_RSTBRST
+ * @param SYSCTRL_RSTFLAG  ：SYSCTRL_RESETFLAG_POR   SYSCTRL_RESETFLAG_PIN
+ *                           SYSCTRL_RESETFLAG_LVD   SYSCTRL_RESETFLAG_LOCKUP
+ *                           SYSCTRL_RESETFLAG_IWDT  SYSCTRL_RESETFLAG_SYSRESETREQ
+ *                           SYSCTRL_RESETFLAG_ALL   
  * @return
  */
 void SYSCTRL_ClearRstFlag(uint32_t SYSCTRL_RSTFLAG)
