@@ -112,10 +112,6 @@ __WEAK void SysTickDelay(uint32_t Delay)
     uint32_t wait = Delay;
 
     /* Add a freq to guarantee minimum wait */
-    if (wait < MAX_SYSTICK_DELAY)
-    {
-        wait += (uint32_t)(uwTickFreq);
-    }
 
     while((GetTick() - tickstart) < wait)
     {
@@ -164,6 +160,6 @@ __WEAK void ResumeTick(void)
 void SysTick_Handler(void)
 {
     /* USER CODE BEGIN SysTick_IRQn */
-    uwTick += uwTickFreq;
+    uwTick += uwTickFreq;    
     /* USER CODE END SysTick_IRQn */
 }

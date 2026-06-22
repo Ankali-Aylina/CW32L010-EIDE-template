@@ -61,6 +61,7 @@ typedef struct
                                                     ((PRESCALER) == IWDT_Prescaler_DIV32)  ||\
                                                     ((PRESCALER) == IWDT_Prescaler_DIV64)  ||\
                                                     ((PRESCALER) == IWDT_Prescaler_DIV128) ||\
+                                                    ((PRESCALER) == IWDT_Prescaler_DIV256) ||\
                                                     ((PRESCALER) == IWDT_Prescaler_DIV512))
 #define IS_IWDT_WINDOW_VALUE(VALUE)                ((VALUE) <= 0xFFF)
 #define IS_IWDT_RELOAD(COUNTER)                    ((COUNTER) <= 0xFFF)
@@ -71,8 +72,7 @@ typedef struct
 #define IWDT_1_SECS                                63
 #define IWDT_0_5_SECS                              31
 #define IWDT_0_25_SECS                             15
-#define IS_IWDT_PERIOD(PERIOD)                     ((PERIOD) == IWDT_2_SECS || (PERIOD) == IWDT_1_SECS ||\
-                                                    (PERIOD) == IWDT_0_5_SECS || (PERIOD) == IWDT_0_25_SECS)
+#define IS_IWDT_PERIOD(PERIOD)                     ((PERIOD) <= 0xFFF)
 
 #define IWDT_UNLOCK_KEY                            0x5555
 #define IWDT_LOCK_KEY                              0x6666

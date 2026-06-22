@@ -46,18 +46,31 @@
  */
 void RTC_DeInit(void)
 {
+    uint32_t prim;
+
+    /* 读取当前 PRIMASK 值 */
+    prim = __get_PRIMASK();   // 返回 0 或 1
+    /* 手动置 1（关中断） */
+    __set_PRIMASK(1);   
+    
     /* 解锁RTC寄存器的写保护 */
     CW_RTC->KEY_f.KEY = RTC_KEY_WORD1;
     CW_RTC->KEY_f.KEY = RTC_KEY_WORD2;
 
-    /* 对除RTC_CR0、RTC_CR1、RTC_CR2和RTC_COMPEN外，其他的RTC寄存器赋默认值 */
-    CW_RTC->DATE = RTC_DATE_RESET_VALUE;
-    CW_RTC->TIME = RTC_TIME_RESET_VALUE;
+    /* 对除RTC_CR0、RTC_CR1、RTC_CR2和RTC_COMPEN外，其他的RTC寄存器赋默认值 */    
     CW_RTC->ALARMA = RTC_ALARMA_RESET_VALUE;
-    CW_RTC->ALARMB = RTC_ALARMB_RESET_VALUE;
-    CW_RTC->AWTARR = RTC_AWTARR_RESET_VALUE;
+    CW_RTC->ALARMB = RTC_ALARMB_RESET_VALUE;    
     CW_RTC->IER = RTC_IER_RESET_VALUE;
     CW_RTC->ICR = 0UL;    // 清除中断标志位
+    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
+    {        
+        CW_RTC->CR1_f.ACCESS = 1;
+        while (!CW_RTC->CR1_f.WINDOW);
+    }
+    CW_RTC->DATE = RTC_DATE_RESET_VALUE;
+    CW_RTC->TIME = RTC_TIME_RESET_VALUE;
+    CW_RTC->AWTARR = RTC_AWTARR_RESET_VALUE;    
+    CW_RTC->CR1_f.ACCESS = 0;     
 
     /* 使能RTC寄存器的写保护 */
     CW_RTC->KEY_f.KEY = RTC_KEY_WORD1;
@@ -68,6 +81,9 @@ void RTC_DeInit(void)
 
     /* 关闭RTC模块的时钟 */
     CW_SYSCTRL->APBEN2_f.RTC = 0;
+    
+    /* 手动恢复（开中断） */
+    __set_PRIMASK(prim);      // 恢复之前保存的值
 }
 
 /**
@@ -86,7 +102,6 @@ ErrorStatus RTC_Init(RTC_InitTypeDef* RTC_InitStruct)
         SYSCTRL_ClearRstFlag(SYSCTRL_RESETFLAG_ALL);        
         return SUCCESS;    
     }
-
     
     RTC_Cmd(DISABLE);                        //  停止RTC，保证正确访问RTC寄存器
 
@@ -106,9 +121,7 @@ void RTC_Cmd(FunctionalState NewState)
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
     RTC_UNLOCK();
-
     CW_RTC->CR0_f.START = NewState;
-
     RTC_LOCK();
 }
 
@@ -144,10 +157,7 @@ void RTC_ITConfig(uint32_t RTC_IT, FunctionalState NewState)
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
     RTC_UNLOCK();
-
-    CW_RTC->CR1_f.ACCESS = 1;
-    while (!CW_RTC->CR1_f.WINDOW);
-
+    
     if (!NewState)
     {
         CW_RTC->IER &= ~RTC_IT;
@@ -156,8 +166,7 @@ void RTC_ITConfig(uint32_t RTC_IT, FunctionalState NewState)
     {
         CW_RTC->IER |= RTC_IT;
     }
-
-    CW_RTC->CR1_f.ACCESS = 0;
+    
     RTC_LOCK();
 }
 
@@ -170,14 +179,8 @@ void RTC_ClearITPendingBit(uint32_t RTC_IT)
 {
     assert_param(IS_RTC_CLAER_IT(RTC_IT));
 
-    RTC_UNLOCK();
-
-    //  CW_RTC->CR1_f.ACCESS = 1;
-    //  while (!CW_RTC->CR1_f.WINDOW);
-
-    CW_RTC->ICR = ~RTC_IT;
-
-    //  CW_RTC->CR1_f.ACCESS = 0;
+    RTC_UNLOCK();    
+    CW_RTC->ICR = ~RTC_IT;    
     RTC_LOCK();
 }
 
@@ -188,16 +191,30 @@ void RTC_ClearITPendingBit(uint32_t RTC_IT)
  */
 void RTC_SetTime(RTC_TimeTypeDef* RTC_TimeStruct)
 {
+    uint32_t prim;
+    
     assert_param(IS_RTC_SECONDS(RTC_BCDToBin(RTC_TimeStruct->Second)));
-    assert_param(IS_RTC_MINUTES(RTC_BCDToBin(RTC_TimeStruct->Minute)));
+    assert_param(IS_RTC_MINUTES(RTC_BCDToBin(RTC_TimeStruct->Minute)));    
+    
     if (RTC_TimeStruct->H24 == RTC_HOUR12)
         assert_param(IS_RTC_HOUR12(RTC_BCDToBin(RTC_TimeStruct->Hour)));
     else
         assert_param(IS_RTC_HOUR24(RTC_BCDToBin(RTC_TimeStruct->Hour)));
 
-    RTC_UNLOCK();
+    /* 读取当前 PRIMASK 值 */
+    prim = __get_PRIMASK();   // 返回 0 或 1
 
-    CW_RTC->CR0_f.H24 = RTC_TimeStruct->H24;
+    /* 手动置 1（关中断） */
+    __set_PRIMASK(1);
+    
+    RTC_UNLOCK();
+    CW_RTC->CR0_f.H24 = RTC_TimeStruct->H24;    
+    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
+    {        
+        CW_RTC->CR1_f.ACCESS = 1;
+        while (!CW_RTC->CR1_f.WINDOW);
+    }
+    
     if (RTC_TimeStruct->H24 == RTC_HOUR12)
     {
         CW_RTC->TIME = ((uint32_t)(RTC_TimeStruct->AMPM) << 21) |
@@ -211,31 +228,48 @@ void RTC_SetTime(RTC_TimeTypeDef* RTC_TimeStruct)
                        ((uint32_t)(RTC_TimeStruct->Minute) << 8) |
                        ((uint32_t)(RTC_TimeStruct->Second));
     }
-
-    CW_RTC->CR1_f.ACCESS = 0;
+    CW_RTC->CR1_f.ACCESS = 0;    
     RTC_LOCK();
+
+    /* 手动恢复（开中断） */
+    __set_PRIMASK(prim);      // 恢复之前保存的值
 }
 
 /**
  * @brief
- *   设置日期，DAY、MONTH、YEAR必须为BCD方，星期为0~6，代表星期日，星期一至星期六
+ *   设置日期，DAY、MONTH、YEAR必须为BCD码，星期为0~6，代表星期日，星期一至星期六
  * @param RTC_DateStruct
  */
 void RTC_SetDate(RTC_DateTypeDef* RTC_DateStruct)
 {
+    uint32_t prim;
+    
     assert_param(IS_RTC_YEAR(RTC_BCDToBin(RTC_DateStruct->Year)));
     assert_param(IS_RTC_MONTH(RTC_BCDToBin(RTC_DateStruct->Month)));
     assert_param(IS_RTC_DAY(RTC_BCDToBin(RTC_DateStruct->Day)));
     assert_param(IS_RTC_WEEKDAY(RTC_DateStruct->Week));
+    
+    /* 读取当前 PRIMASK 值 */
+    prim = __get_PRIMASK();   // 返回 0 或 1
+    /* 手动置 1（关中断） */
+    __set_PRIMASK(1);
 
-    RTC_UNLOCK();
+    RTC_UNLOCK();    
+    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
+    {        
+        CW_RTC->CR1_f.ACCESS = 1;
+        while (!CW_RTC->CR1_f.WINDOW);
+    }
 
     CW_RTC->DATE = ((uint32_t)(RTC_DateStruct->Week) << 24) |
                    ((uint32_t)(RTC_DateStruct->Year) << 16) |
                    ((uint32_t)(RTC_DateStruct->Month) << 8) |
                    ((uint32_t)(RTC_DateStruct->Day));
-
+    CW_RTC->CR1_f.ACCESS = 0;
     RTC_LOCK();
+
+    /* 手动恢复（开中断） */
+    __set_PRIMASK(prim);      // 恢复之前保存的值
 }
 
 /**
@@ -247,8 +281,7 @@ void RTC_GetTime(RTC_TimeTypeDef* RTC_TimeStruct)
 {
     uint32_t RegTmp = 0;
 
-    RTC_TimeStruct->H24 = CW_RTC->CR0_f.H24;  // 读CR0是否需要连读两次，待硬件检测
-
+    RTC_TimeStruct->H24 = CW_RTC->CR0_f.H24;
     RegTmp = CW_RTC->TIME;
     while (RegTmp != CW_RTC->TIME)
     {
@@ -303,6 +336,7 @@ void RTC_SetAlarm(uint32_t RTC_Alarm, RTC_AlarmTypeDef* RTC_AlarmStruct)
     assert_param(IS_ALARM_MASK(RTC_AlarmStruct->RTC_AlarmMask));
     assert_param(IS_RTC_SECONDS(RTC_BCDToBin(RTC_AlarmStruct->RTC_AlarmTime.Second)));
     assert_param(IS_RTC_MINUTES(RTC_BCDToBin(RTC_AlarmStruct->RTC_AlarmTime.Minute)));
+
     if (RTC_AlarmStruct->RTC_AlarmTime.H24 == RTC_HOUR12)
         assert_param(IS_RTC_HOUR12(RTC_BCDToBin(RTC_AlarmStruct->RTC_AlarmTime.Hour)));
     else
@@ -314,9 +348,6 @@ void RTC_SetAlarm(uint32_t RTC_Alarm, RTC_AlarmTypeDef* RTC_AlarmStruct)
              (uint32_t)(RTC_AlarmStruct->RTC_AlarmTime.Second);
 
     RTC_UNLOCK();
-    CW_RTC->CR1_f.ACCESS = 1;
-    while (!CW_RTC->CR1_f.WINDOW);
-
     if (RTC_Alarm == RTC_Alarm_A)
     {
         CW_RTC->ALARMA = RegTmp;
@@ -325,8 +356,6 @@ void RTC_SetAlarm(uint32_t RTC_Alarm, RTC_AlarmTypeDef* RTC_AlarmStruct)
     {
         CW_RTC->ALARMB = RegTmp;
     }
-
-    CW_RTC->CR1_f.ACCESS = 0;
     RTC_LOCK();
 }
 
@@ -360,9 +389,7 @@ void RTC_GetAlarm(uint32_t RTC_Alarm, RTC_AlarmTypeDef* RTC_AlarmStruct)
     }
 
     RTC_AlarmStruct->RTC_AlarmMask = RegTmp & RTC_AlarmMask_All;
-
     RTC_AlarmStruct->RTC_AlarmTime.H24 = CW_RTC->CR0_f.H24;     // 读CR0是否需要连读两次，待硬件检测
-
     RTC_AlarmStruct->RTC_AlarmTime.Hour = (uint8_t)((RegTmp & RTC_TIME_HOUR_Msk) >> 16);
     RTC_AlarmStruct->RTC_AlarmTime.Minute = (uint8_t)((RegTmp & RTC_TIME_MINUTE_Msk) >> 8);
     RTC_AlarmStruct->RTC_AlarmTime.Second = (uint8_t)(RegTmp & RTC_TIME_SECOND_Msk);
@@ -379,13 +406,6 @@ void RTC_AlarmCmd(uint32_t RTC_Alarm, FunctionalState NewState)
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
     RTC_UNLOCK();
-
-    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
-    {
-        CW_RTC->CR1_f.ACCESS = 1;
-        while (!CW_RTC->CR1_f.WINDOW);
-    }
-
     if (RTC_Alarm == RTC_Alarm_A)
     {
         CW_RTC->CR2_f.ALARMAEN = NewState;
@@ -394,8 +414,6 @@ void RTC_AlarmCmd(uint32_t RTC_Alarm, FunctionalState NewState)
     {
         CW_RTC->CR2_f.ALARMBEN = NewState;
     }
-
-    CW_RTC->CR1_f.ACCESS = 0;
     RTC_LOCK();
 }
 
@@ -404,16 +422,7 @@ void RTC_TamperTriggerConfig(uint32_t RTC_TamperTrigger)
     assert_param(IS_RTC_TAMPER_TRIGGER(RTC_TamperTrigger));
 
     RTC_UNLOCK();
-
-    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
-    {
-        CW_RTC->CR1_f.ACCESS = 1;
-        while (!CW_RTC->CR1_f.WINDOW);
-    }
-
     CW_RTC->CR2_f.TAMPEDGE = RTC_TamperTrigger;
-
-    CW_RTC->CR1_f.ACCESS = 0;
     RTC_LOCK();
 }
 
@@ -422,28 +431,13 @@ void RTC_TamperCmd(FunctionalState NewState)
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
     RTC_UNLOCK();
-
-    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
-    {
-        CW_RTC->CR1_f.ACCESS = 1;
-        while (!CW_RTC->CR1_f.WINDOW);
-    }
-
     CW_RTC->CR2_f.TAMPEN = NewState;
-
-    CW_RTC->CR1_f.ACCESS = 0;
     RTC_LOCK();
 }
 
 void RTC_GetTamperDate(RTC_DateTypeDef* RTC_Date)
 {
-    uint32_t RegTmp = 0;
-
-    do
-    {
-        RegTmp = CW_RTC->TAMPDATE;
-    }
-    while (RegTmp != CW_RTC->TAMPDATE);
+    uint32_t RegTmp = CW_RTC->TAMPDATE;
 
     RTC_Date->Week = (uint8_t)((RegTmp & RTC_TAMPDATE_WEEK_Msk) >> 13);
     RTC_Date->Month = (uint8_t)((RegTmp & RTC_TAMPDATE_MONTH_Msk) >> 8);
@@ -452,13 +446,7 @@ void RTC_GetTamperDate(RTC_DateTypeDef* RTC_Date)
 
 void RTC_GetTamperTime(RTC_TimeTypeDef* RTC_TimeStruct)
 {
-    uint32_t RegTmp = 0;
-
-    do
-    {
-        RegTmp = CW_RTC->TAMPTIME;
-    }
-    while (RegTmp != CW_RTC->TAMPTIME);     // 连续两次读取的内容一致，认为读取成功
+    uint32_t RegTmp = CW_RTC->TAMPTIME;
 
     RTC_TimeStruct->Second = (uint8_t)((RegTmp & RTC_TAMPTIME_SECOND_Msk) >> 16);
     RTC_TimeStruct->Minute = (uint8_t)((RegTmp & RTC_TAMPTIME_MINUTE_Msk) >> 8);
@@ -470,7 +458,6 @@ void RTC_GetTamperTime(RTC_TimeTypeDef* RTC_TimeStruct)
         RTC_TimeStruct->AMPM = RTC_TimeStruct->Hour >> 5;
         RTC_TimeStruct->Hour &= 0x1f;
     }
-
 }
 
 
@@ -484,16 +471,7 @@ void RTC_OutputConfig(uint8_t RTC_Output)
     assert_param(IS_RTC_RTCOUT_SOURCE(RTC_Output));
 
     RTC_UNLOCK();
-
-    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
-    {
-        CW_RTC->CR1_f.ACCESS = 1;
-        while (!CW_RTC->CR1_f.WINDOW);
-    }
-
-    CW_RTC->CR2_f.RTCOUT = RTC_Output;
-
-    CW_RTC->CR1_f.ACCESS = 0;
+    CW_RTC->CR2_f.RTCOUT = RTC_Output;   
     RTC_LOCK();
 }
 
@@ -507,18 +485,8 @@ void RTC_AWTConfig(RTC_AWTTypeDef* RCT_AWTStruct)
     assert_param(IS_RTC_AWTTIMER_SOURCE(RCT_AWTStruct->AWT_ClockSource));
 
     RTC_UNLOCK();
-
-    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
-    {
-        CW_RTC->CR1_f.ACCESS = 1;
-        while (!CW_RTC->CR1_f.WINDOW);
-    }
-
-    CW_RTC->CR2_f.AWTSRC = RCT_AWTStruct->AWT_ClockSource;
+    CW_RTC->CR2 = (CW_RTC->CR2 & (RTC_CR2_AWTPRS_Msk | RTC_CR2_AWTSRC_Msk)) | RCT_AWTStruct->AWT_ClockSource;    
     CW_RTC->AWTARR = (uint32_t)RCT_AWTStruct->AWT_ARRValue;
-
-    CW_RTC->CR1_f.ACCESS = 0;
-
     RTC_LOCK();
 }
 
@@ -532,17 +500,7 @@ void RTC_AWTCmd(FunctionalState NewState)
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
     RTC_UNLOCK();
-
-    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
-    {
-        CW_RTC->CR1_f.ACCESS = 1;
-        while (!CW_RTC->CR1_f.WINDOW);
-    }
-
     CW_RTC->CR2_f.AWTEN = NewState;
-
-    CW_RTC->CR1_f.ACCESS = 0;
-
     RTC_LOCK();
 }
 
@@ -556,17 +514,7 @@ void RTC_SetInterval(uint8_t Period)
     assert_param(IS_RTC_INTERVAL_PERIOD(Period));
 
     RTC_UNLOCK();
-
-    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
-    {
-        CW_RTC->CR1_f.ACCESS = 1;        
-        while (!CW_RTC->CR1_f.WINDOW);
-    }
-
     CW_RTC->CR0_f.INTERVAL = Period;
-
-    CW_RTC->CR1_f.ACCESS = 0;
-
     RTC_LOCK();
 }
 
@@ -581,18 +529,12 @@ void RTC_SetClockSource(uint32_t RTC_ClockSource)
     assert_param(IS_RTC_RTCCLK_SOURCE(RTC_ClockSource));
 
     RTC_UNLOCK();    /* 解除RTC寄存器的写保护 */
-
-//  CW_RTC->CR1_f.SOURCE = RTC_ClockSource;    // 设置RTC时钟源
     CW_RTC->CR1 = RTC_ClockSource;    // 设置RTC时钟源,同时将WINDOWS、ACCESS位清零
-
     RTC_LOCK();
 }
 
 /**
- * @brief 设置校准时钟参数：FREQ、STEP、SIGN、COMPEN ||
- * 注:RTC_CalibStruct->Step 为 0 时，要保证 RTC_CalibStruct->RefClock 大于 4MHz ||
- *    RTC_CalibStruct->Step 为 1 时，要保证 RTC_CalibStruct->RefClock 大于 12MHz ||
- *    RTC_CalibStruct->Step 为 2 时，要保证 RTC_CalibStruct->RefClock 大于 24MHz
+ * @brief 设置校准时钟参数：FREQ、STEP、SIGN、COMPEN  
  *
  * @param RTC_CalibStruct
  */
@@ -604,19 +546,9 @@ void RTC_CalibrationConfig(RTC_CalibTypeDef* RTC_CalibStruct)
     assert_param(IS_RTC_COMPEN_VALUE(RTC_CalibStruct->CompensationValue));
 
     RTC_UNLOCK();
-
-    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
-    {
-        CW_RTC->CR1_f.ACCESS = 1;
-        while (!CW_RTC->CR1_f.WINDOW);
-    }
-
     CW_RTC->COMPCFR1 = (RTC_CalibStruct->Sign << 14) |
                      (RTC_CalibStruct->Step << 12) |
-                     RTC_CalibStruct->CompensationValue;
-
-    CW_RTC->CR1_f.ACCESS = 0;
-
+                     RTC_CalibStruct->CompensationValue;    
     RTC_LOCK();
 }
 
@@ -625,17 +557,7 @@ void RTC_CalibrationCmd(FunctionalState NewState)
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
     RTC_UNLOCK();
-
-    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
-    {
-        CW_RTC->CR1_f.ACCESS = 1;
-        while (!CW_RTC->CR1_f.WINDOW);
-    }
-
-    CW_RTC->COMPCFR1_f.EN = NewState;
-
-    CW_RTC->CR1_f.ACCESS = 0;
-
+    CW_RTC->COMPCFR1_f.EN = NewState;   
     RTC_LOCK();
 }
 
@@ -648,19 +570,9 @@ void RTC_AWT_PSC_set(uint8_t PSC1A,uint32_t PSC2A)
 {
 //    assert_param(IS_RTC_AWTTIMER_SOURCE(RCT_AWTStruct->AWT_ClockSource));
 
-    RTC_UNLOCK();
-
-    if (IS_RTC_START())         // 如果RTC正在运行，则使用WINDOWS、ACCESS访问
-    {
-        CW_RTC->CR1_f.ACCESS = 1;
-        while (!CW_RTC->CR1_f.WINDOW);
-    }
-		
+    RTC_UNLOCK();		
     CW_RTC->PSC_f.PSC1 = PSC1A;
-    CW_RTC->PSC_f.PSC2 = PSC2A;
-
-    CW_RTC->CR1_f.ACCESS = 0;
-
+    CW_RTC->PSC_f.PSC2 = PSC2A;   
     RTC_LOCK();
 }
 /**

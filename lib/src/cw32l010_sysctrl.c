@@ -59,7 +59,7 @@ void SYSCTRL_HCLKPRS_Config(uint32_t HCLKPRS)
  */
 void SYSCTRL_PCLKPRS_Config(uint32_t PCLKPRS)
 {
-    assert_param(IS_SYSCTRL_HCLKPRS(PCLKPRS));
+    assert_param(IS_SYSCTRL_PCLKPRS(PCLKPRS));
     CW_SYSCTRL->CR0 = ((CW_SYSCTRL->CR0 & (~(SYSCTRL_KEY_MASK | SYSCTRL_CR0_PCLKPRS_Msk))) | SYSCTRL_KEY | PCLKPRS);
 }
 
@@ -424,7 +424,7 @@ int SYSCTRL_HSE_Enable(uint32_t Mode, uint32_t FreqIn, uint8_t Driver, uint32_t 
     //使能HSE,同时使能CLKCCS和HSECCS，使能时钟失效切换
     CW_SYSCTRL->CR1 |= SYSCTRL_KEY | SYSCTRL_CR1_CLKCCS_Msk | SYSCTRL_CR1_HSECCS_Msk | SYSCTRL_CR1_HSEEN_Msk;  //Enable HSE
     //等待HSE稳定
-    while (((CW_SYSCTRL->HSE & SYSCTRL_HSE_STABLE_Msk) != SYSCTRL_HSE_STABLE_Msk) && timeout--);        //Wait stable
+    while (((CW_SYSCTRL->HSE & SYSCTRL_HSE_STABLE_Msk) != SYSCTRL_HSE_STABLE_Msk) && --timeout);        //Wait stable
     if (timeout == 0) return 1;
     return 0;
 }
@@ -755,7 +755,7 @@ void SYSCTRL_APBPeriphReset1(uint32_t Periph, FunctionalState NewState)
  */
 void SYSCTRL_APBPeriphReset2(uint32_t Periph, FunctionalState NewState)
 {
-    assert_param(IS_SYSCTRL_APB1_PERIPH(Periph));
+    assert_param(IS_SYSCTRL_APB2_PERIPH(Periph));
 
     if (NewState != ENABLE)
     {
@@ -813,7 +813,7 @@ void SYSCTRL_ClearRstFlag(uint32_t SYSCTRL_RSTFLAG)
  */
 void SYSCTRL_PCLK_OUT(void)
 {
-	   __SYSCTRL_GPIOA_CLK_ENABLE();
+    __SYSCTRL_GPIOA_CLK_ENABLE();
     CW_GPIOA->ANALOG_f.PIN2 = 0U;
     CW_GPIOA->DIR_f.PIN2 = 0U;
     CW_GPIOA->AFRL_f.AFR2 = 1U;

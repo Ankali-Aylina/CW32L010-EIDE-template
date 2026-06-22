@@ -361,9 +361,9 @@ void VC2_ChannelInit(VC_InitTypeDef* VC_InitStruct)
 void VC_DeInit(void)
 {
     // Enable VC reset state
-    REGBITS_CLR(CW_SYSCTRL->APBRST2, 0x5A5A0000U | SYSCTRL_APBRST1_VC_Msk);
+    REGBITS_CLR(CW_SYSCTRL->APBRST1, 0x5A5A0000U | SYSCTRL_APBRST1_VC_Msk);
     // Release VC from reset state
-    REGBITS_SET(CW_SYSCTRL->APBRST2, 0x5A5A0000U | SYSCTRL_APBRST1_VC_Msk);
+    REGBITS_SET(CW_SYSCTRL->APBRST1, 0x5A5A0000U | SYSCTRL_APBRST1_VC_Msk);
 
     VC1_ChannelDeInit();
     VC2_ChannelDeInit();

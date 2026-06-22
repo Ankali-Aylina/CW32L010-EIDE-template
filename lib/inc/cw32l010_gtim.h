@@ -46,7 +46,7 @@ extern "C" {
  */
 typedef struct
 {
-    uint32_t ARRBuffState;                  /*!< GTIM ARR 缓存是能控制 */
+    uint32_t ARRBuffState;                  /*!< GTIM ARR 缓存使能控制 */
     uint32_t AlignMode;                     /*!< GTIM的模式选择。 */
     uint32_t Direction;                     /*!< GTIM的计数方向，中心对其模式下无效 */
     uint32_t PulseMode;                     /*!< GTIM的单次/连续计数模式选择。 */
@@ -160,7 +160,7 @@ typedef struct
 #define GTIM_TRIG_INPUT_ITR3               (3U)
 #define GTIM_TRIG_INPUT_TI1F_ED            (4U)
 #define GTIM_TRIG_INPUT_TI1FP1             (5U)
-#define GTIM_TRIG_INPUT_TI1FP2             (6U)
+#define GTIM_TRIG_INPUT_TI2FP2             (6U)
 #define GTIM_TRIG_INPUT_ETRF               (7U)
 #define GTIM_TRIG_INPUT_ITR4               (8U)
 #define GTIM_TRIG_INPUT_ITR5               (9U)

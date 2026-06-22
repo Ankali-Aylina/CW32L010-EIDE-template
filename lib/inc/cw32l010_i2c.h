@@ -50,7 +50,7 @@ typedef enum en_i2c_channel
 
 typedef enum 
 {
-    I2C_NO_ERROR = 0,                         // Error type codes
+    I2C_NO_ERROR = 0,                     // Error type codes
 	I2C_MT_ARBITRATION_LOST,              // A
 	I2C_MR_ARBITRATION_LOST,              // B
 	I2C_ARBITRATION_LOST_AND_ST_SELECTED, // C

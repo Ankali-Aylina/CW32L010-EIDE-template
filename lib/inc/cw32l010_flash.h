@@ -42,6 +42,18 @@ extern "C" {
 /*****************************************************************************/
 /* Global pre-processor symbols/macros ('#define')                           */
 /*****************************************************************************/
+// 密钥值（高16位）
+#define FLASH_KEY                   0x5A5A
+
+#define FLASH_PAGE_SIZE         512
+#define FLASH_TOTAL_PAGES       128
+#define FLASH_BYTES_SIZE        0x10000
+#define FLASH_START_ADDRESS     0x00000000
+#define FLASH_END_ADDRESS       0x0000FFFF
+
+#define OTP_BYTES_SIZE          22
+#define OTP_START_ADDRESS       0x00100760
+#define OTP_END_ADDRESS         0x00100775
 //============================================================
 
 /** @defgroup FLASH状态
@@ -91,8 +103,8 @@ extern "C" {
  * @{
  */
 #define FLASH_WRProt_AllPages             ((uint32_t)0x0000FFFF) /*!< Write protection of all Pages */
-#define IS_FLASH_PAGE_Number(PAGENUMBER)  ((PAGENUMBER) <= 511)
-#define IS_FLASH_ADDRESS(ADDRESS)         (((ADDRESS) >= 0x00000000) && ((ADDRESS) < 0x00040000))
+#define IS_FLASH_PAGE_Number(PAGENUMBER)  ((PAGENUMBER) < FLASH_TOTAL_PAGES)
+#define IS_FLASH_ADDRESS(ADDRESS)         (((ADDRESS) >= FLASH_START_ADDRESS) && ((ADDRESS) <= FLASH_END_ADDRESS))
 
 //============================================================
 //设置FLASH读访问周期
@@ -113,11 +125,11 @@ void FLASH_SetReadOutLevel(uint16_t RdLevel);
 void FLASH_UnlockAllPages(void);
 //锁定FLASH所有页面
 void FLASH_LockAllPages(void);
-//解锁FLASH指定页面：按照页面号解锁，0~511
+//解锁FLASH指定页面：按照页面号解锁，0~FLASH_TOTAL_PAGES-1
 uint8_t FLASH_UnlockPage(uint16_t Page_Number);
 //解锁FLASH指定页面：按照起始和终止地址解锁
 uint8_t FLASH_UnlockPages(uint32_t StartAddr, uint32_t EndAddr);
-//擦除FLASH指定页面：按照页面号擦除，0~511
+//擦除FLASH指定页面：按照页面号擦除，0~FLASH_TOTAL_PAGES-1
 uint8_t FLASH_ErasePage(uint16_t Page_Number);
 //擦除FLASH指定页面：按照起始和终止地址擦除
 uint8_t FLASH_ErasePages(uint32_t StartAddr, uint32_t EndAddr);
@@ -128,7 +140,7 @@ uint8_t FLASH_WriteHalfWords(uint32_t WriteAddr, uint16_t* pWrBuf, uint16_t WrBy
 //指定地址开始写一定长度的数据，按照字写
 uint8_t FLASH_WriteWords(uint32_t WriteAddr, uint32_t* pWrBuf, uint16_t WrByteCnt);
 
-//锁定FLASH指定页面：按照页面号锁定，0~511
+//锁定FLASH指定页面：按照页面号锁定，0~FLASH_TOTAL_PAGES-1
 uint8_t FLASH_LockPage(uint16_t Page_Number);
 //锁定FLASH指定页面：按照起始和终止地址锁定
 uint8_t FLASH_LockPages(uint32_t StartAddr, uint32_t EndAddr);
@@ -141,6 +153,10 @@ void FLASH_ClearITPendingBit(uint32_t FLASH_IT);
 //获取FLASH模块当前状态//
 uint32_t FLASH_GetStatus(void);
 
+//向OTP的指定地址写入数据
+uint8_t OTP_WriteBytes(uint32_t WriteAddr, uint8_t* pWrBuf, uint16_t WrByteCnt);
+// FLASH的安全运行库区功能使能
+uint8_t FLASH_SafetyLibraryEnable(uint8_t *Passwords, uint8_t StartPage, uint8_t EndPage);
 //============================================================
 
 #ifdef __cplusplus

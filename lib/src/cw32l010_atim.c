@@ -475,11 +475,13 @@ void ATIM_SetCompare4(uint16_t Compare)
 }
 void ATIM_SetCompare5(uint16_t Compare)
 {
-    CW_ATIM->CCR5 = Compare;
+    CW_ATIM->CCR5_f.CCR5 = Compare;
+    //CW_ATIM->CCR5 = Compare;
 }
 void ATIM_SetCompare6(uint16_t Compare)
 {
-    CW_ATIM->CCR6 = Compare;
+    CW_ATIM->CCR6_f.CCR6 = Compare;
+    //CW_ATIM->CCR6 = Compare;
 }
 
 void ATIM_CtrlPWMOutputs(FunctionalState NewState)

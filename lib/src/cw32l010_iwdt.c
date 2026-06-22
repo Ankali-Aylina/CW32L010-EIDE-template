@@ -225,12 +225,12 @@ uint32_t IWDT_GetCounterValue(void)
 /**
   * @brief  Set IWDT counting period.
   * @param  counting period:
-               WDT_5_SECS
-               WDT_4_SECS
-               WDT_2_SECS
-               WDT_1_SECS
-               WDT_0_5_SECS
-               WDT_0_25_SECS
+               IWDT_5_SECS
+               IWDT_4_SECS
+               IWDT_2_SECS
+               IWDT_1_SECS
+               IWDT_0_5_SECS
+               IWDT_0_25_SECS
   * @retval None
   */
 void IWDT_SetPeriod(uint32_t period)

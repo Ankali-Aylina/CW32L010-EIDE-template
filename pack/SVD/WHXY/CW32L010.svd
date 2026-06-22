@@ -12,7 +12,7 @@
     <endian>little</endian>
     <mpuPresent>false</mpuPresent>
     <fpuPresent>false</fpuPresent>
-    <nvicPrioBits>3</nvicPrioBits>
+    <nvicPrioBits>2</nvicPrioBits>
     <vendorSystickConfig>false</vendorSystickConfig>
   </cpu>
   <addressUnitBits>8</addressUnitBits>
@@ -1116,14 +1116,14 @@
               <lsb>20</lsb>
               <access>read-write</access>
             </field>
-             <field>
+            <field>
               <name>CC6IE</name>
               <description>desc CC6IE</description>
               <msb>17</msb>
               <lsb>17</lsb>
               <access>read-write</access>
             </field>
-             <field>
+            <field>
               <name>CC5IE</name>
               <description>desc CC5IE</description>
               <msb>16</msb>
@@ -1193,161 +1193,161 @@
           <description>Interrupt status register</description>
           <addressOffset>0x10</addressOffset>
           <size>32</size>
-          <access>read-write</access>
+          <access>read-only</access>
           <fields>
             <field>
               <name>TERRF</name>
               <description>desc TERRF</description>
               <msb>23</msb>
               <lsb>23</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>IERRF</name>
               <description>desc IERRF</description>
               <msb>22</msb>
               <lsb>22</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>DIRF</name>
               <description>desc DIRF</description>
               <msb>21</msb>
               <lsb>21</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>IDXF</name>
               <description>desc IDXF</description>
               <msb>20</msb>
               <lsb>20</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC6OF</name>
               <description>desc CC6OF</description>
               <msb>19</msb>
               <lsb>19</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC5OF</name>
               <description>desc CC5OF</description>
               <msb>18</msb>
               <lsb>18</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC6IF</name>
               <description>desc CC6IF</description>
               <msb>17</msb>
               <lsb>17</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC5IF</name>
               <description>desc CC5IF</description>
               <msb>16</msb>
               <lsb>16</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>SBIF</name>
               <description>desc SBIF</description>
               <msb>13</msb>
               <lsb>13</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC4OF</name>
               <description>desc CC4OF</description>
               <msb>12</msb>
               <lsb>12</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC3OF</name>
               <description>desc CC3OF</description>
               <msb>11</msb>
               <lsb>11</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC2OF</name>
               <description>desc CC2OF</description>
               <msb>10</msb>
               <lsb>10</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC1OF</name>
               <description>desc CC1OF</description>
               <msb>9</msb>
               <lsb>9</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>B2IF</name>
               <description>desc B2IF</description>
               <msb>8</msb>
               <lsb>8</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>BIF</name>
               <description>desc BIF</description>
               <msb>7</msb>
               <lsb>7</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>TIF</name>
               <description>desc TIF</description>
               <msb>6</msb>
               <lsb>6</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>COMIF</name>
               <description>desc COMIF</description>
               <msb>5</msb>
               <lsb>5</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC4IF</name>
               <description>desc CC4IF</description>
               <msb>4</msb>
               <lsb>4</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC3IF</name>
               <description>desc CC3IF</description>
               <msb>3</msb>
               <lsb>3</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC2IF</name>
               <description>desc CC2IF</description>
               <msb>2</msb>
               <lsb>2</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC1IF</name>
               <description>desc CC1IF</description>
               <msb>1</msb>
               <lsb>1</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>UIF</name>
               <description>desc UIF</description>
               <msb>0</msb>
               <lsb>0</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
           </fields>
         </register>
@@ -2835,7 +2835,7 @@
             </field>
             <field>
               <name>UIFREMAP</name>
-              <description>desc REMAP</description>
+              <description>desc UIFREMAP</description>
               <msb>11</msb>
               <lsb>11</lsb>
               <access>read-write</access>
@@ -6094,105 +6094,105 @@
           <description>Interrupt status register</description>
           <addressOffset>0x10</addressOffset>
           <size>32</size>
-          <access>read-write</access>
+          <access>read-only</access>
           <fields>
             <field>
               <name>TERRF</name>
               <description>desc TERRF</description>
               <msb>23</msb>
               <lsb>23</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>IERRF</name>
               <description>desc IERRF</description>
               <msb>22</msb>
               <lsb>22</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>DIRF</name>
               <description>desc DIRF</description>
               <msb>21</msb>
               <lsb>21</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>IDXF</name>
               <description>desc IDXF</description>
               <msb>20</msb>
               <lsb>20</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC4OF</name>
               <description>desc CC4OF</description>
               <msb>12</msb>
               <lsb>12</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC3OF</name>
               <description>desc CC3OF</description>
               <msb>11</msb>
               <lsb>11</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC2OF</name>
               <description>desc CC2OF</description>
               <msb>10</msb>
               <lsb>10</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC1OF</name>
               <description>desc CC1OF</description>
               <msb>9</msb>
               <lsb>9</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>TIF</name>
               <description>desc TIF</description>
               <msb>6</msb>
               <lsb>6</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC4IF</name>
               <description>desc CC4IF</description>
               <msb>4</msb>
               <lsb>4</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC3IF</name>
               <description>desc CC3IF</description>
               <msb>3</msb>
               <lsb>3</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC2IF</name>
               <description>desc CC2IF</description>
               <msb>2</msb>
               <lsb>2</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>CC1IF</name>
               <description>desc CC1IF</description>
               <msb>1</msb>
               <lsb>1</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
             <field>
               <name>UIF</name>
               <description>desc UIF</description>
               <msb>0</msb>
               <lsb>0</lsb>
-              <access>read-write</access>
+              <access>read-only</access>
             </field>
           </fields>
         </register>
@@ -7213,7 +7213,7 @@
         <register>
           <name>CR</name>
           <description>Input selection register</description>
-          <addressOffset>0x8</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>32</size>
           <access>read-write</access>
           <fields>
@@ -7817,11 +7817,6 @@
       <name>RAM</name>
       <description>desc RAM</description>
       <baseAddress>0x40022400</baseAddress>
-      <interrupt>
-        <name>FLASHRAM</name>
-        <description>Flash/RAM Interrupt</description>
-        <value>3</value>
-      </interrupt>
       <headerStructName>RAM</headerStructName>
       <size>32</size>
       <addressBlock>
@@ -7984,7 +7979,7 @@
               <lsb>3</lsb>
               <access>read-write</access>
             </field>
-             <field>
+            <field>
               <name>PARITY</name>
               <description>desc PARITY</description>
               <msb>2</msb>
@@ -8704,15 +8699,15 @@
               <access>read-write</access>
             </field>
             <field>
-              <name>RISE</name>
-              <description>desc RISE</description>
+              <name>FALL</name>
+              <description>desc FALL</description>
               <msb>3</msb>
               <lsb>3</lsb>
               <access>read-write</access>
             </field>
             <field>
-              <name>FALL</name>
-              <description>desc FALL</description>
+              <name>RISE</name>
+              <description>desc RISE</description>
               <msb>2</msb>
               <lsb>2</lsb>
               <access>read-write</access>
@@ -9441,38 +9436,6 @@
             </field>
           </fields>
         </register>
-        <register>
-          <name>COMPCFR2</name>
-          <description>desc COMPCFR2</description>
-          <addressOffset>0x54</addressOffset>
-          <size>32</size>
-          <access>read-write</access>
-          <fields>
-            <field>
-              <name>PCLKCNT</name>
-              <description>desc PCLKCNT</description>
-              <msb>10</msb>
-              <lsb>0</lsb>
-              <access>read-write</access>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>COMPCFR3</name>
-          <description>desc COMPCFR3</description>
-          <addressOffset>0x58</addressOffset>
-          <size>32</size>
-          <access>read-only</access>
-          <fields>
-            <field>
-              <name>PCLKCNT</name>
-              <description>desc PCLKCNT</description>
-              <msb>10</msb>
-              <lsb>0</lsb>
-              <access>read-only</access>
-            </field>
-          </fields>
-        </register>
       </registers>
     </peripheral>
     <peripheral>
@@ -9882,6 +9845,11 @@
         <name>SYSCTRL</name>
         <description>SYSCTRL Interupt</description>
         <value>4</value>
+      </interrupt>
+      <interrupt>
+        <name>CLKFAULT</name>
+        <description>Clock Fault Interupt</description>
+        <value>31</value>
       </interrupt>
       <headerStructName>SYSCTRL</headerStructName>
       <size>32</size>
@@ -10366,7 +10334,7 @@
           <addressOffset>0x1C</addressOffset>
           <size>32</size>
           <access>read-write</access>
-          <fields>            
+          <fields>
             <field>
               <name>DIGFLT</name>
               <description>desc DIGFLT</description>
@@ -10477,45 +10445,10 @@
               <access>read-write</access>
             </field>
             <field>
-              <name>WP</name>
-              <description>desc WP</description>
-              <msb>16</msb>
-              <lsb>16</lsb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>RESTRIM</name>
-              <description>desc RESTRIM</description>
-              <msb>15</msb>
-              <lsb>14</lsb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>CPEN</name>
-              <description>desc CPEN</description>
-              <msb>13</msb>
-              <lsb>13</lsb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>COMP</name>
-              <description>desc COMP</description>
-              <msb>12</msb>
-              <lsb>12</lsb>
-              <access>read-write</access>
-            </field>
-            <field>
               <name>PDRIVER</name>
               <description>desc PDRIVER</description>
               <msb>11</msb>
               <lsb>8</lsb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>ANAFLT</name>
-              <description>desc ANAFLT</description>
-              <msb>7</msb>
-              <lsb>7</lsb>
               <access>read-write</access>
             </field>
             <field>
@@ -10648,7 +10581,7 @@
               <description>desc KEY</description>
               <msb>31</msb>
               <lsb>16</lsb>
-              <access>read-write</access>
+              <access>write-only</access>
             </field>
             <field>
               <name>LPTIM</name>
@@ -10694,12 +10627,12 @@
           <size>32</size>
           <access>read-write</access>
           <fields>
-             <field>
+            <field>
               <name>KEY</name>
               <description>desc KEY</description>
               <msb>31</msb>
               <lsb>16</lsb>
-              <access>read-write</access>
+              <access>write-only</access>
             </field>
             <field>
               <name>GTIM1</name>
@@ -10971,7 +10904,6 @@
       <name>VC1</name>
       <description>desc VC1</description>
       <baseAddress>0x400000A4</baseAddress>
-      <alternatePeripheral>VCREF</alternatePeripheral>
       <interrupt>
         <name>VC1</name>
         <description>Voltage Comparator 1 Interrupt</description>
@@ -11057,7 +10989,7 @@
           <addressOffset>0x4</addressOffset>
           <size>32</size>
           <access>read-write</access>
-          <fields>           
+          <fields>
             <field>
               <name>BLANKLVL</name>
               <description>desc BLANKLVL</description>
@@ -11180,7 +11112,6 @@
       <name>VC2</name>
       <description>desc VC2</description>
       <baseAddress>0x400000B4</baseAddress>
-      <alternatePeripheral>VCREF</alternatePeripheral>
       <interrupt>
         <name>VC2</name>
         <description>Voltage Comparator 2 Interrupt</description>
@@ -11188,11 +11119,11 @@
       </interrupt>
     </peripheral>
     <peripheral>
-      <name>VCREF</name>
-      <description>desc VCREF</description>
+      <name>VCDIV</name>
+      <description>desc VCDIV</description>
       <baseAddress>0x400000A0</baseAddress>
       <groupName>VC</groupName>
-      <headerStructName>VCREF</headerStructName>
+      <headerStructName>VCDIV</headerStructName>
       <size>32</size>
       <addressBlock>
         <offset>0x0</offset>
@@ -11201,7 +11132,7 @@
       </addressBlock>
       <registers>
         <register>
-          <name>CR</name>
+          <name>DIV</name>
           <description>VCREF Control register</description>
           <addressOffset>0x0</addressOffset>
           <size>32</size>

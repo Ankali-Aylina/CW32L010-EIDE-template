@@ -525,14 +525,14 @@ void UART_HalfDuplexCmd(UART_TypeDef* UARTx, FunctionalState NewState)
  *     @arg UART_DMAReq_Rx: DMA接收请求
  * @param NewState :ENABLE or DISABLE
  */
-void UART_DMACmd(UART_TypeDef* UARTx, uint16_t UART_DMAReq, FunctionalState NewState)
-{
-    assert_param(IS_UART_ALL_PERIPH(UARTx));
-    assert_param(IS_UART_DMAREQ(UART_DMAReq));
-    assert_param(IS_FUNCTIONAL_STATE(NewState));
+//void UART_DMACmd(UART_TypeDef* UARTx, uint16_t UART_DMAReq, FunctionalState NewState)
+//{
+//    assert_param(IS_UART_ALL_PERIPH(UARTx));
+//    assert_param(IS_UART_DMAREQ(UART_DMAReq));
+//    assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-    NewState ? (UARTx->CR2 |= UART_DMAReq) : (UARTx->CR2 &= (uint16_t)~UART_DMAReq);
-}
+//    NewState ? (UARTx->CR2 |= UART_DMAReq) : (UARTx->CR2 &= (uint16_t)~UART_DMAReq);
+//}
 
 /**
  * @brief UARTx多机通信配置
@@ -561,7 +561,7 @@ void UART_SetMultiMode(UART_TypeDef* UARTx, uint8_t UART_Address, uint8_t UART_A
  * 
  * @param UARTx :UARTx外设
  *        参数可以是:
- *           CW_UART1、CW_UART2、
+ *           CW_UART1
  * @param NewState :ENABLE or DISABLE
  */
 void UART_LINCmd(UART_TypeDef* UARTx, FunctionalState NewState)
@@ -578,7 +578,7 @@ void UART_LINCmd(UART_TypeDef* UARTx, FunctionalState NewState)
  * 
  * @param UARTx :UARTx外设
  *        参数可以是:
- *           CW_UART1、CW_UART2、
+ *           CW_UART1
  * @param UART_LINBreakDetectLength :间隔段长度阈值
   *   参数可以是：
  *     @arg UART_LINBreakDetectLength_10b: 10bit
@@ -597,7 +597,7 @@ void UART_LINBreakDetectLengthConfig(UART_TypeDef* UARTx, uint16_t UART_LINBreak
  * 
  * @param UARTx :UARTx外设
  *        参数可以是:
- *           CW_UART1、CW_UART2、
+ *           CW_UART1
  * @param UART_TimerMode :定时器工作模式
   *   参数可以是：
  *     @arg UART_TimerMode_Stop:          停止定时器
@@ -620,7 +620,7 @@ void UART_TimerModeConfig(UART_TypeDef* UARTx, uint16_t UART_TimerMode)
  * 
  * @param UARTx :UARTx外设
  *        参数可以是:
- *           CW_UART1、CW_UART2、
+ *           CW_UART1
  * @param Autoreload :定时器重载值 范围0x000000~0xFFFFFF
  */
 void UART_SetAutoReload(UART_TypeDef* UARTx, uint32_t AutoReload)
@@ -636,7 +636,7 @@ void UART_SetAutoReload(UART_TypeDef* UARTx, uint32_t AutoReload)
  * 
  * @param UARTx :UARTx外设
  *        参数可以是:
- *           CW_UART1、CW_UART2、
+ *           CW_UART1
  * @return uint32_t :定时器当前计数值
  */
 uint32_t UART_GetCounter(UART_TypeDef* UARTx)

@@ -96,7 +96,7 @@ typedef struct
                                                 ((src) == RTC_RTC1HZ_FROM_PCLK) || \
                                                 ((src) == RTC_RTC1HZ_FROM_LSE))
 
-#define RTC_HOUR24                              (1UL << 3)
+#define RTC_HOUR24                              (1UL)
 #define RTC_HOUR12                              (0UL)
 #define IS_RTC_HOUR_FORMAT(fmt)                 (((fmt) == RTC_HOUR24) || ((fmt) == RTC_HOUR12))
 #define IS_RTC_HOUR12_FORMAT(fmt)               ((fmt) == RTC_HOUR12)
@@ -150,9 +150,9 @@ typedef struct
                                                 ((IT) == RTC_IT_ALARMA) || \
                                                 ((IT) == RTC_IT_ALL ))
 #define IS_RTC_CONFIG_IT(IT)                    ((((uint8_t)(IT) & 0x20) == 0) && \
-                                                ((uint8_t)(IT) < 0x40))
+                                                ((uint8_t)(IT) <= 0x40))
 #define IS_RTC_CLAER_IT(IT)                     ((((uint8_t)(IT) & 0x20) == 0) && \
-                                                ((uint8_t)(IT) < 0x40))
+                                                ((uint8_t)(IT) <= 0x40))
 
 /** @defgroup RTC_AlarmMask_Definitions
   * @{
@@ -181,7 +181,7 @@ typedef struct
 /** @defgroup RTC_Compen_step
   * @{
   */
-#define RTC_RTCOUT_AS_LOW                       (0x0)
+#define RTC_RTCOUT_AS_RTC1HZ                    (0x0)
 #define RTC_RTCOUT_AS_ALARM_A                   (0x1)
 #define RTC_RTCOUT_AS_ALARM_B                   (0x2)
 #define RTC_RTCOUT_AS_AWT                       (0x3)
@@ -309,7 +309,7 @@ typedef struct
 
 #define RTC_UNLOCK()                            do{ CW_RTC->KEY_f.KEY = RTC_KEY_WORD1;\
                                                     CW_RTC->KEY_f.KEY = RTC_KEY_WORD2; }while (0)
-#define RTC_LOCK()                              do{ CW_RTC->KEY_f.KEY = RTC_KEY_LOCKW; \
+#define RTC_LOCK()                              do{ CW_RTC->KEY_f.KEY = RTC_KEY_WORD1; \
                                                     CW_RTC->KEY_f.KEY = RTC_KEY_LOCKW;}while (0)
 
 
@@ -375,7 +375,7 @@ typedef struct
 #define RTC_TAMP_ENABLE()                       (CW_RTC->CR2_f.TAMPEN = 1)
 #define RTC_TAMP_DISABLE()                      (CW_RTC->CR2_f.TAMPEN = 0)
 
-#define RTC_RTCOUT_LOW()                        (CW_RTC->CR2_f.RTCOUT = RTC_RTCOUT_AS_LOW)
+#define RTC_RTCOUT_RTC1HZ()                     (CW_RTC->CR2_f.RTCOUT = RTC_RTCOUT_AS_RTC1HZ)
 #define RTC_RTCOUT_ALARM_A()                    (CW_RTC->CR2_f.RTCOUT = RTC_RTCOUT_AS_ALARM_A)
 #define RTC_RTCOUT_ALARM_B()                    (CW_RTC->CR2_f.RTCOUT = RTC_RTCOUT_AS_ALARM_B)
 #define RTC_RTCOUT_AWT()                        (CW_RTC->CR2_f.RTCOUT = RTC_RTCOUT_AS_AWT)

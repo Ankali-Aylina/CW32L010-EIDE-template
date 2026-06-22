@@ -42,7 +42,7 @@ void SystemCoreClockUpdate(void) // Update SystemCoreClock variable
  ******************************************************************************/
 void SystemInit(void)
 {
-/* Configure the Vector Table location add offset address ------------------*/
+    /* Configure the Vector Table location add offset address ------------------*/
 #if defined(USER_VECT_TAB_ADDRESS)
     SCB->VTOR = VECT_TAB_BASE_ADDRESS | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM */
 #endif /* USER_VECT_TAB_ADDRESS */
@@ -50,7 +50,7 @@ void SystemInit(void)
     //Load TrimCode in this.
     CW_SYSCTRL->HSI_f.TRIM = *((volatile uint16_t *)SYSCTRL_HSI_TRIMCODEADDR);
     CW_SYSCTRL->LSI_f.TRIM = *((volatile uint16_t *)SYSCTRL_LSI_TRIMCODEADDR);
-   
+
     SystemCoreClockUpdate();
 
     //Init Hide thing.
@@ -60,7 +60,7 @@ void SystemInit(void)
 void FirmwareDelay(uint32_t DlyCnt)
 {
     volatile uint32_t thisCnt = DlyCnt;
-    while( thisCnt-- )
+    while ( thisCnt-- )
     {
         ;
     }

@@ -51,8 +51,8 @@ void FLASH_SetLatency(uint32_t FLASH_Latency)
     /* Check the parameters */
     assert_param(IS_FLASH_LATENCY(FLASH_Latency));
 
-    //CW_SYSCTRL->AHBEN_f.FLASH = 1;
-    REGBITS_SET(CW_SYSCTRL->AHBEN,0x5A5A0000 | bv1);
+    // 使能FLASH配置时钟
+    CW_SYSCTRL->AHBEN |= (SYSCTRL_AHBEN_FLASH_Msk | 0x5a5a0000);
     CW_FLASH->CR2 = 0x5A5A0000 | FLASH_Latency;
 }
 
@@ -115,7 +115,7 @@ void FLASH_LockAllPages(void)
 /**
  * @brief 解锁指定页面
  *
- * @param Page_Number : 0 - 127
+ * @param Page_Number : 0 ~ FLASH_TOTAL_PAGES-1
  * @return uint8_t    : 正常返回0x00
  */
 uint8_t FLASH_UnlockPage(uint16_t Page_Number)
@@ -148,7 +148,7 @@ uint8_t FLASH_UnlockPages(uint32_t StartAddr, uint32_t EndAddr)
         return (FLASH_ERROR_ADDR);     //待解锁页面地址出错
     }
 
-    if ((StartAddr > 0x0000FFFF) || (EndAddr > 0x0000FFFF))
+    if ((StartAddr > FLASH_END_ADDRESS) || (EndAddr > FLASH_END_ADDRESS))
     {
         return(FLASH_ERROR_ADDR);
     }
@@ -180,12 +180,12 @@ uint8_t FLASH_ErasePage(uint16_t Page_Number)
 {
     uint16_t  CR1BAK, CR2BAK;
 
-    if( ( Page_Number > 128 ) )
+    if( ( Page_Number >= FLASH_TOTAL_PAGES ) )
     {
         return(FLASH_ERROR_ADDR);
     }
 
-    while (CW_FLASH->ISR & bv5);                       //等待上1次操作完成，未作超时处理
+    while(CW_FLASH->ISR_f.BUSY);                          //等待上1次操作完成，未作超时处理
 
     CW_FLASH->ICR = 0x00;                                  //clear all int flag
     CR2BAK = CW_FLASH->CR2;
@@ -194,7 +194,7 @@ uint8_t FLASH_ErasePage(uint16_t Page_Number)
 
     *((volatile uint8_t*)(Page_Number * 512)) = 0x00;       //erase page
 
-    while (CW_FLASH->ISR & bv5);                            //等待操作完成
+    while(CW_FLASH->ISR_f.BUSY);                         //等待操作完成
 
     CW_FLASH->CR1 = 0x5A5A0000 | CR1BAK;
     CW_FLASH->CR2 = 0x5A5A0000 | CR2BAK;
@@ -213,7 +213,7 @@ uint8_t FLASH_ErasePages(uint32_t StartAddr, uint32_t EndAddr)
 {
     uint16_t  CR1BAK;
 
-    if ((StartAddr > 0x0000FFFF) || (EndAddr > 0x0000FFFF))
+    if ((StartAddr > FLASH_END_ADDRESS) || (EndAddr > FLASH_END_ADDRESS))
     {
         return(FLASH_ERROR_ADDR);
     }
@@ -252,7 +252,7 @@ uint8_t FLASH_WriteBytes(uint32_t WriteAddr, uint8_t* pWrBuf, uint16_t WrByteCnt
 {
     uint16_t  CR1BAK;
 
-    if( WriteAddr + WrByteCnt - 1> 0xFFFF )
+    if( WriteAddr + WrByteCnt > FLASH_BYTES_SIZE )
     {
         return(FLASH_ERROR_ADDR);
     }
@@ -287,7 +287,7 @@ uint8_t FLASH_WriteHalfWords(uint32_t WriteAddr, uint16_t* pWrBuf, uint16_t WrBy
 {
     uint16_t  CR1BAK, CR2BAK;
 
-    if (WriteAddr + WrByteCnt > 0x10000)
+    if (WriteAddr + WrByteCnt*2 > FLASH_BYTES_SIZE)
     {
         return(FLASH_ERROR_ADDR);
     }
@@ -297,7 +297,7 @@ uint8_t FLASH_WriteHalfWords(uint32_t WriteAddr, uint16_t* pWrBuf, uint16_t WrBy
         return(FLASH_ERROR_ADDR);
     }
 
-    while (CW_FLASH->ISR & bv5);                          //等待上1次操作完成，未作超时处理
+    while( CW_FLASH->ISR_f.BUSY);                          //等待上1次操作完成，未作超时处理
 
     CW_FLASH->ICR = 0x00;                                    //clear all int flag
     CR2BAK = CW_FLASH->CR2;
@@ -308,7 +308,7 @@ uint8_t FLASH_WriteHalfWords(uint32_t WriteAddr, uint16_t* pWrBuf, uint16_t WrBy
     {
         *((volatile uint16_t*)(WriteAddr)) = *pWrBuf;        //write byte
 
-        while (CW_FLASH->ISR & bv5);                        //等待操作完成
+        while (CW_FLASH->ISR_f.BUSY);                       //等待操作完成
 
         WriteAddr += 2;
         WrByteCnt--;
@@ -333,7 +333,7 @@ uint8_t FLASH_WriteWords(uint32_t WriteAddr, uint32_t* pWrBuf, uint16_t WrByteCn
 {
     uint16_t  CR1BAK, CR2BAK;
 
-    if (WriteAddr + WrByteCnt > 0x10000)
+    if (WriteAddr + WrByteCnt*4 > FLASH_BYTES_SIZE)
     {
         return(FLASH_ERROR_ADDR);
     }
@@ -343,7 +343,7 @@ uint8_t FLASH_WriteWords(uint32_t WriteAddr, uint32_t* pWrBuf, uint16_t WrByteCn
         return(FLASH_ERROR_ADDR);
     }
 
-    while (CW_FLASH->ISR & bv5);                          //等待上1次操作完成，未作超时处理
+    while (CW_FLASH->ISR_f.BUSY);                          //等待上1次操作完成，未作超时处理
 
     CW_FLASH->ICR = 0x00;                                    //clear all int flag
     CR2BAK = CW_FLASH->CR2;
@@ -396,12 +396,12 @@ uint8_t FLASH_LockPages(uint32_t StartAddr, uint32_t EndAddr)
 
     UnlockMask = 0x00;
 
-    if (EndAddr > StartAddr)
+    if (EndAddr < StartAddr)
     {
         return (FLASH_ERROR_ADDR);     //待锁定页面地址出错
     }
 
-    if ((StartAddr > 0x0000FFFF) || (EndAddr > 0x0000FFFF))
+    if ((StartAddr > FLASH_END_ADDRESS) || (EndAddr > FLASH_END_ADDRESS))
     {
         return(FLASH_ERROR_ADDR);
     }
@@ -513,4 +513,113 @@ uint32_t FLASH_GetStatus(void)
 
     return FLASH_FLAG_OK;
 }
+/*******************************************************************************
+  * @brief  向OTP的指定地址写入数据
+  * @param  WriteAddr: 待写入数据的OTP的起始地址
+  * @param  pWrBuf   : 待写入的数据的指针
+  * @param  WrByteCnt: 待写入的数据的字节数量
+  * @retval 0x00   : 代表成功
+  *         0x01   : 代表失败
+  * @note   OTP区域的大小为22字节，掉电后数据不会丢失，每个字节一旦编程后不可再擦除。
+  *         OTP的起始地址、终止地址请参见手册或cw32l01x_flash.h文件的定义。
+  */
+uint8_t OTP_WriteBytes(uint32_t WriteAddr, uint8_t* pWrBuf, uint16_t WrByteCnt)
+{
+    uint16_t  CR1BAK;
+    
+    // 验证地址是否合法
+    if ((WriteAddr < OTP_START_ADDRESS) || ((WriteAddr + WrByteCnt - 1) > OTP_END_ADDRESS))
+    {
+        return 0x01;
+    }
+    
+    while (CW_FLASH->ISR_f.BUSY);                          //等待上1次操作完成，未作超时处理
 
+    CW_FLASH->ICR = 0x00;                                    //clear all int flag
+    CR1BAK = CW_FLASH->CR1;
+    
+    CW_FLASH->CR1 = 0x5A5A0000 | 0x01u;        // 设置为写模式
+    
+    while(WrByteCnt)
+    {
+        *((volatile uint8_t *)(WriteAddr)) = *pWrBuf;                 // write byte
+        while (CW_FLASH->ISR_f.BUSY);
+        
+        // 校验
+        if (*((volatile uint8_t *)(WriteAddr)) != *pWrBuf)
+        {
+            return 0x01;
+        }
+        WriteAddr++;
+        WrByteCnt--;
+        pWrBuf++;        
+    }
+    
+    CW_FLASH->CR1 = 0x5A5A0000 | CR1BAK;
+    
+    return 0x00;   
+}
+
+/*******************************************************************************
+  * @brief  安全运行库使能
+  * @param  Passwords: 密码
+  * @param  StartPage: 保护区起始页
+  * @param  EndPage: 保护区结束页
+  * @retval 0x00   : 代表成功
+  *         0x01   : 代表失败
+  * @note   
+  */
+uint8_t FLASH_SafetyLibraryEnable(uint8_t *Passwords, uint8_t StartPage, uint8_t EndPage)
+{
+    uint8_t FlashSDK_Table[16];
+    uint8_t i;
+    uint8_t *_passwords = Passwords;
+    volatile uint8_t *ptr = (volatile uint8_t *)(0xfff0);
+
+    CW_SYSCTRL->AHBEN |=  0x5A5A0000 | SYSCTRL_AHBEN_FLASH_Msk;
+    
+    if (CW_FLASH->SDKCFR != 0x0000007F) 
+    {
+        // 已设置安全运行区
+       return 0x01;
+    }
+    
+    CW_SYSCTRL->AHBEN |= 0x5A5A0000 | SYSCTRL_AHBEN_CRC_Msk;
+    CW_CRC->CR = 0x06;    // CRC16_X25
+    for (i = 0; i<8; i++)
+    {
+        CW_CRC->DR = *_passwords;
+        FlashSDK_Table[i] = *_passwords;
+        _passwords++;
+    }
+    
+    CW_CRC->DR = StartPage;
+    FlashSDK_Table[i++] = StartPage;
+    CW_CRC->DR = EndPage;
+    FlashSDK_Table[i++] = EndPage;
+    
+    CW_CRC->DR =0x5A;
+    FlashSDK_Table[i++] = 0x5A;
+    CW_CRC->DR =0x5A;
+    FlashSDK_Table[i++] = 0x5A;
+    CW_CRC->DR =0xA5;
+    FlashSDK_Table[i++] = 0xA5;
+    CW_CRC->DR =0xA5;
+    FlashSDK_Table[i++] = 0xA5;
+
+    FlashSDK_Table[i++] = (uint8_t)CW_CRC->RESULT;    
+    FlashSDK_Table[i]  = (uint8_t)(CW_CRC->RESULT >> 8);
+
+    CW_FLASH->PAGELOCK = 0x5A5A8000;    // 解锁
+    CW_FLASH->CR1 = 0x5a5a0001;    // 写入
+    
+    for (i = 0; i<16; i++)
+    {
+        *ptr = FlashSDK_Table[i];
+        while(CW_FLASH->ISR_f.BUSY);
+        ptr++;
+    }
+    CW_FLASH->CR1 = 0x5a5a0000;
+    
+    return 0x00;    
+}

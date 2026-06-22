@@ -57,8 +57,8 @@ extern "C"
   * @{
   */
 #define LVD_TRIG_LEVEL                  ((uint16_t)0x0002)
-#define LVD_TRIG_FALL                   ((uint16_t)0x0004)
-#define LVD_TRIG_RISE                   ((uint16_t)0x0008)
+#define LVD_TRIG_RISE                   ((uint16_t)0x0004)
+#define LVD_TRIG_FALL                   ((uint16_t)0x0008)
 
 
 #define IS_LVD_TRIG(TRIG) ((((TRIG) & (uint16_t)0xFF00) == 0x00) && ((TRIG) != 0x00))
@@ -139,6 +139,7 @@ extern "C"
 /** @defgroup LVD_FilterTime
   * @{
   */
+#define LVD_FilterTime_None    (0UL)
 #define LVD_FilterTime_1N2     ((uint32_t)0x00000010)
 #define LVD_FilterTime_1N4     ((uint32_t)0x00000020)
 #define LVD_FilterTime_1N8     ((uint32_t)0x00000030)
@@ -155,21 +156,22 @@ extern "C"
 #define LVD_FilterTime_32N6    ((uint32_t)0x000000E0)
 #define LVD_FilterTime_32N8    ((uint32_t)0x000000F0)
 	
-#define IS_LVD_FILTER_TIME(FILTER_TIME) (((FILTER_TIME) == LVD_FilterTime_1N2) || \
-          ((FILTER_TIME) == LVD_FilterTime_1N4) || \
-          ((FILTER_TIME) == LVD_FilterTime_1N8) || \
-          ((FILTER_TIME) == LVD_FilterTime_2N6) || \
-          ((FILTER_TIME) == LVD_FilterTime_2N8) || \
-          ((FILTER_TIME) == LVD_FilterTime_4N6) || \
-          ((FILTER_TIME) == LVD_FilterTime_4N8) || \
-					((FILTER_TIME) == LVD_FilterTime_8N6) || \
-					((FILTER_TIME) == LVD_FilterTime_8N8) || \
-					((FILTER_TIME) == LVD_FilterTime_16N5)|| \
-					((FILTER_TIME) == LVD_FilterTime_16N6)|| \
-					((FILTER_TIME) == LVD_FilterTime_16N8)|| \
-					((FILTER_TIME) == LVD_FilterTime_32N5)|| \
-					((FILTER_TIME) == LVD_FilterTime_32N6)|| \
-          ((FILTER_TIME) == LVD_FilterTime_32N8))
+#define IS_LVD_FILTER_TIME(FILTER_TIME)        (((FILTER_TIME) == LVD_FilterTime_None) || \
+	                                            ((FILTER_TIME) == LVD_FilterTime_1N2) || \
+                                                ((FILTER_TIME) == LVD_FilterTime_1N4) || \
+                                                ((FILTER_TIME) == LVD_FilterTime_1N8) || \
+                                                ((FILTER_TIME) == LVD_FilterTime_2N6) || \
+                                                ((FILTER_TIME) == LVD_FilterTime_2N8) || \
+                                                ((FILTER_TIME) == LVD_FilterTime_4N6) || \
+                                                ((FILTER_TIME) == LVD_FilterTime_4N8) || \
+					                            ((FILTER_TIME) == LVD_FilterTime_8N6) || \
+					                            ((FILTER_TIME) == LVD_FilterTime_8N8) || \
+					                            ((FILTER_TIME) == LVD_FilterTime_16N5)|| \
+					                            ((FILTER_TIME) == LVD_FilterTime_16N6)|| \
+					                            ((FILTER_TIME) == LVD_FilterTime_16N8)|| \
+					                            ((FILTER_TIME) == LVD_FilterTime_32N5)|| \
+					                            ((FILTER_TIME) == LVD_FilterTime_32N6)|| \
+                                                ((FILTER_TIME) == LVD_FilterTime_32N8))
 
 /**
  ******************************************************************************

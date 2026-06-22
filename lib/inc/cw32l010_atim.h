@@ -182,7 +182,7 @@ typedef struct
 #define ATIM_ICPRESCALER_DIV1                  0UL
 #define ATIM_ICPRESCALER_DIV2                  1UL
 #define ATIM_ICPRESCALER_DIV4                  2UL
-#define ATIM_ICPRESCALER_DIV5                  3UL
+#define ATIM_ICPRESCALER_DIV8                  3UL
 #define IS_ATIMC_IC_PRESCALER(ICPERSCALER)     ((ICPERSCALER) < 4U)
 
 
@@ -193,8 +193,8 @@ typedef struct
                                                ((POLARITY) == ATIM_OCPOLARITY_INVERT))
 
 #define ATIM_OCMODE_FROZEN                     (0UL)
-#define ATIM_OCMODE_INACTIVE                   (1UL)
-#define ATIM_OCMODE_ACTIVE                     (2UL)
+#define ATIM_OCMODE_ACTIVE                   (1UL)
+#define ATIM_OCMODE_INACTIVE                     (2UL)
 #define ATIM_OCMODE_TOGGLE                     (3UL)
 #define ATIM_OCMODE_FORCED_INACTIVE            (4UL)
 #define ATIM_OCMODE_FORCED_ACTIVE              (5UL)

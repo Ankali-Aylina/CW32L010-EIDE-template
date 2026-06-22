@@ -36,27 +36,6 @@
 .global g_pfnVectors // 声明全局变量g_pfnVectors
 .global Default_Handler // 声明全局函数Default_Handler
 
-/* start address for the initialization values of the .data section.
-defined in linker script */
-/* .data data段 Flash中初始化数据的起始地址 */
-.word _sidata
-
-/* start address for the .data section. defined in linker script */
-/* .data data段 RAM中数据段的起始地址 */
-.word _sdata
-
-/* end address for the .data section. defined in linker script */
-/* .data data段 RAM中数据段的结束地址 */
-.word _edata
-
-/* start address for the .bss section. defined in linker script */
-/* .bss BSS段（未初始化全局变量）的起始地址 */
-.word _sbss
-
-/* end address for the .bss section. defined in linker script */
-/* .bss BSS段（未初始化全局变量）的结束地址 */
-.word _ebss
-
 /**
  * @brief  This is the code that gets called when the processor first
  *          starts execution following a reset event. Only the absolutely
@@ -193,10 +172,6 @@ Infinite_Loop:
   /*g_pfnVectors 是一个函数指针数组，每个元素指向一个中断服务函数 */
   .type g_pfnVectors, %object
 
-  /*设置 g_pfnVectors 的大小为当前位置减去 g_pfnVectors 的起始位置 */
-  /*设置符号 g_pfnVectors 的大小为整个中断向量表的字节长度 */
-  .size g_pfnVectors, .-g_pfnVectors
-
 g_pfnVectors:
   .word  _estack                        /* Top of Stack */
   .word  Reset_Handler                  /* Reset Handler */
@@ -247,6 +222,10 @@ g_pfnVectors:
   .word Default_Handler           /* 29 Reserved                                 */
   .word Default_Handler           /* 30 Reserved                                 */
   .word CLKFAULT_IRQHandler       /* 31 Clock Fault Interrupt Handler            */
+
+  /*设置 g_pfnVectors 的大小为当前位置减去 g_pfnVectors 的起始位置 */
+  /*设置符号 g_pfnVectors 的大小为整个中断向量表的字节长度 */
+  .size g_pfnVectors, .-g_pfnVectors
 
 /*******************************************************************************
 *

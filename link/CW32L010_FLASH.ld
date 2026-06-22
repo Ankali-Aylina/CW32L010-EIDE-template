@@ -64,6 +64,7 @@ SECTIONS
 
     . = ALIGN(4);
     _etext = .;        /* define a global symbols at end of code */
+    __etext = _etext;  /* alias for compatibility */
   } >FLASH
 
   /*常量数据进入FLASH*/
@@ -121,9 +122,9 @@ SECTIONS
 
 
   /*未初始化数据节*/
-  . = ALIGN(4);
   .bss :
   {
+    . = ALIGN(4);
     /*启动代码使用此符号以初始化.bss节*/
     _sbss = .;         /* 在bss开始处定义一个全局符号 */
     __bss_start__ = _sbss;
@@ -147,12 +148,13 @@ SECTIONS
     . = ALIGN(8);
   } >RAM
 
-  /*从标准库中删除信息*/
+  /*从标准库中删除未使用的信息*/
+  /* 注意: 请勿丢弃 libgcc.a，因为 Cortex-M0+ 没有硬件除法器，
+     编译器会依赖其中的 __aeabi_uidiv / __aeabi_idiv 等辅助函数 */
   /DISCARD/ :
   {
     libc.a ( * )
     libm.a ( * )
-    libgcc.a ( * )
   }
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
