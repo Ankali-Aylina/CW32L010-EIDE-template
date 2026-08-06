@@ -36,7 +36,7 @@
       <device Dname="CW32L010F8">
         <processor  Dclock="8000000"/>   
         <compile    header="Device/Include/cw32l010.h"/>
-        <debug      svd="SVD/CW32L010.SFR"/>
+        <debug      svd="SVD/CW32L010.svd"/>
         <memory     name="IROM1"  access="rx"       start="0x00000000"  size="0x10000"     startup="1"   default="1"/>
         <memory     name="IRAM1"  access="rw"       start="0x20000000"  size="0x01000"     init   ="0"   default="1"/>
         <algorithm  name="Flash/FlashCW32L010.FLM"  start="0x00000000"  size="0x10000"                   default="1"/>

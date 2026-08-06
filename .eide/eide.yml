@@ -95,6 +95,6 @@ targets:
         bin: ""
         config: .eide/debug.pyocd.yaml
         otherCmds: ""
-        speed: 50k
+        speed: 4M
         targetName: cw32l010f8
     uploader: pyOCD

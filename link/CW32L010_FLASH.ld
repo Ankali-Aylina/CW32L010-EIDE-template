@@ -26,9 +26,9 @@
 ENTRY(Reset_Handler)
 
 /*用户模式堆栈的最高地址*/
-_estack = ORIGIN(RAM) + LENGTH(RAM); /* 最大RAM地址 */
+_estack = 0x20001000; /*ORIGIN(RAM) + LENGTH(RAM); 最大RAM地址 */
 /*如果堆栈和堆不适应RAM，则生成链接错误*/
-_Min_Heap_Size = 0x200;      /* 堆所需的最小大小 */
+_Min_Heap_Size = 0x100;      /* 堆所需的最小大小 */
 _Min_Stack_Size = 0x400; /* 堆栈所需的最小大小 */
 
 /*指定内存区域*/
@@ -155,6 +155,7 @@ SECTIONS
   {
     libc.a ( * )
     libm.a ( * )
+    /* libgcc.a ( * ) */
   }
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
