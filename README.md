@@ -45,3 +45,8 @@
 - **SVD File**: Fixed SYSCTRL peripheral's XML Schema violation where two interrupts were illegally nested in one <interrupt> tag (split into two <interrupt>).
 - **Debug Config**: Fixed launch.json cmsisPack version 1.0.0→1.0.2; fixed eide.yml SWD frequency 2M→50k; added external mode debugging + tasks.json auto-start GDB Server.
 - **Usage**: Ctrl+Shift+P → Run Task → "Start PyOCD GDB Server" → wait for ready → F5 to debug.
+
+---
+
+- v0.0.8 修复了无法使用Daplink调试的问题，修正了link文件分配ram过大的问题。
+- v0.0.8 Fixed the problem of not being able to use Daplink debugging, corrected the problem of allocating too much ram in the link file.
