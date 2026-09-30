@@ -50,3 +50,6 @@
 
 - v0.0.8 修复了无法使用Daplink调试的问题，修正了link文件分配ram过大的问题。
 - v0.0.8 Fixed the problem of not being able to use Daplink debugging, corrected the problem of allocating too much ram in the link file.
+
+- v0.0.9 取消忽略lanuch.json，修复了无法调试的问题。
+- v0.0.9 Cancel the ignore of lanuch.json, fix the problem of not being able to debug.
