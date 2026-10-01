@@ -53,3 +53,6 @@
 
 - v0.0.9 取消忽略lanuch.json，修复了无法调试的问题。
 - v0.0.9 Cancel the ignore of lanuch.json, fix the problem of not being able to debug.
+
+- v0.0.10 添加芯片型号，修复断点调试无法使用的问题。
+- v0.0.10 Add chip model, fix the problem that breakpoint debugging cannot be used.

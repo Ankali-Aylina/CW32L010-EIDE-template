@@ -2,3 +2,4 @@ pack:
   - pack/WHXY.CW32L010_DFP.1.0.2.pack
 frequency: 50000
 connect_mode: under-reset
+target_override: cw32l010f8
